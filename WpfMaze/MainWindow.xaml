@@ -8,7 +8,10 @@
         Title="MainWindow" Height="450" Width="800">
     <StackPanel x:Name="StackPanel" HorizontalAlignment="Left" VerticalAlignment="Top">
         <StackPanel.RenderTransform>
-            <MatrixTransform x:Name="MatrixTransform" />
+            <TransformGroup x:Name="StackpanelTransformGroup">
+                <MatrixTransform x:Name="MatrixTransform" />
+                <TranslateTransform X="0" Y="0" x:Name="TranslateTransform" />
+            </TransformGroup>
         </StackPanel.RenderTransform>
         <Canvas>
             <Image x:Name="Bitmap"></Image>

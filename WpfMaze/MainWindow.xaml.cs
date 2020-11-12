@@ -40,6 +40,7 @@ namespace WpfMaze
         {
             System.Windows.Media.Matrix m = this.StackPanel.RenderTransform.Value;
 
+            TransformGroup tGroup = new TransformGroup();
             if (e.Delta > 0)
             {
                 m.ScaleAt(
@@ -56,7 +57,9 @@ namespace WpfMaze
                     e.GetPosition(this).X,
                     e.GetPosition(this).Y);
             }
-            this.StackPanel.RenderTransform = new MatrixTransform(m);
+            tGroup.Children.Add(new MatrixTransform(m));
+            tGroup.Children.Add(this.TranslateTransform);
+            this.StackPanel.RenderTransform = tGroup;
         }
 
         private void left_MouseDown(object sender, MouseButtonEventArgs e)

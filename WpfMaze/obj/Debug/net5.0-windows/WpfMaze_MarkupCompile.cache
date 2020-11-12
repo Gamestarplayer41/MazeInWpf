@@ -4,16 +4,16 @@
 winexe
 C#
 .cs
-C:\Users\games\Desktop\WpfMaze\WpfMaze\obj\Debug\netcoreapp3.1\
+C:\Users\games\Desktop\WpfMaze\WpfMaze\obj\Debug\net5.0-windows\
 WpfMaze
 none
 false
-TRACE;DEBUG;NETCOREAPP;NETCOREAPP3_1;
+TRACE;DEBUG;NET;NET5_0;NETCOREAPP
 C:\Users\games\Desktop\WpfMaze\WpfMaze\App.xaml
 11151548125
 
 141728598006
-1921654412462
+193582816078
 MainWindow.xaml;
 
 False
