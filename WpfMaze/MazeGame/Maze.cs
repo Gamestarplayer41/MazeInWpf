@@ -66,11 +66,8 @@ namespace WpfMaze.Mazegame
         }
 
         public async void paintBitmaps(bool black = false)
-        {
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
+        { 
             Rendering?.Invoke(this);
-            List<Task> tasks = new List<Task>();
             (IntPtr, int, int, int) t = Application.Current.Dispatcher.Invoke(() =>
                {
                    Bitmap.Lock();
@@ -104,7 +101,6 @@ namespace WpfMaze.Mazegame
 
                }
            });
-            await Task.WhenAll(tasks);
             Application.Current.Dispatcher.Invoke(() =>
             {
                 Bitmap.AddDirtyRect(new Int32Rect(0, 0, (int)Bitmap.Width, (int)Bitmap.Height));
@@ -112,8 +108,6 @@ namespace WpfMaze.Mazegame
             });
 
             Rendered?.Invoke(this);
-            watch.Stop();
-            Console.WriteLine(watch.ElapsedMilliseconds);
         }
 
         public void randomize()

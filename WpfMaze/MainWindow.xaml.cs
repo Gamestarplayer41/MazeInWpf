@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -50,11 +51,12 @@ namespace WpfMaze
                 this.maze.MovePlayer(Direction.Left);
             }else if(e.Key == Key.X)
             {
-                Task.Run(() =>
+                Thread t = new Thread(() =>
                 {
                     Wallfollower w = new Wallfollower(maze);
                     w.SolveMaze();
                 });
+                t.Start();
             }
         }
 
