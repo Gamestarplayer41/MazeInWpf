@@ -44,10 +44,9 @@ namespace WpfMaze.Mazegame
         {
             Board = new byte[width, height];
             Application.Current.Dispatcher.Invoke(() =>
-            {
-                this.Bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgr32, null);
-            });
-            this.onPlayerPositionChange += (maze, oldPlayerPosition) => this.changePlayerPosition(oldPlayerPosition);
+              {
+                  this.Bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgr32, null);
+              });
             if (randomize)
                 this.randomize();
         }
@@ -59,16 +58,15 @@ namespace WpfMaze.Mazegame
                 this.Bitmap.Lock();
                 DrawPixel(oldPlayerPosition.X, oldPlayerPosition.Y, new int[3] { 255, 0, 255 }, this.Bitmap.BackBuffer, this.Bitmap.BackBufferStride);
                 DrawPixel(Player.X, Player.Y, new int[3] { 255, 0, 0 }, this.Bitmap.BackBuffer, this.Bitmap.BackBufferStride);
-                this.Bitmap.AddDirtyRect(new Int32Rect(oldPlayerPosition.X, oldPlayerPosition.Y, 1, 1));
-                this.Bitmap.AddDirtyRect(new Int32Rect(Player.X, Player.Y, 1, 1));
+                this.Bitmap.AddDirtyRect(new Int32Rect(0, 0,(int) Bitmap.Width,(int) Bitmap.Height));
                 this.Bitmap.Unlock();
             });
         }
 
         public async void paintBitmaps(bool black = false)
-        { 
+        {
             Rendering?.Invoke(this);
-            (IntPtr, int, int, int) t = Application.Current.Dispatcher.Invoke(() =>
+            (IntPtr, int, int, int) t = Bitmap.Dispatcher.Invoke(() =>
                {
                    Bitmap.Lock();
 
@@ -83,25 +81,25 @@ namespace WpfMaze.Mazegame
                    {
                        if (x == Player.X && y == Player.Y)
                        {
-                           BitmapPart.DrawPixel(x, y, new int[3] { 255, 0, 0 }, t.Item1, t.Item2);
+                           DrawPixel(x+1, y+1, new int[3] { 255, 0, 0 }, t.Item1, t.Item2);
                        }
                        else if (x == Finish.X && y == Finish.Y)
                        {
-                           BitmapPart.DrawPixel(x, y, new int[3] { 0, 0, 255 }, t.Item1, t.Item2);
+                           DrawPixel(x+1, y+1, new int[3] { 0, 0, 255 }, t.Item1, t.Item2);
                        }
                        else if (Board[x, y] == 1)
                        {
-                           BitmapPart.DrawPixel(x, y, new int[3] { 0, 0, 0 }, t.Item1, t.Item2);
+                           DrawPixel(x+1, y+1, new int[3] { 0, 0, 0 }, t.Item1, t.Item2);
                        }
                        else
                        {
-                           BitmapPart.DrawPixel(x, y, (black) ? new int[3] { 0, 0, 0 } : new int[3] { 255, 255, 255 }, t.Item1, t.Item2);
+                           DrawPixel(x+1, y+1, (black) ? new int[3] { 0, 0, 0 } : new int[3] { 255, 255, 255 }, t.Item1, t.Item2);
                        }
                    }
 
                }
            });
-            Application.Current.Dispatcher.Invoke(() =>
+            Bitmap.Dispatcher.Invoke(() =>
             {
                 Bitmap.AddDirtyRect(new Int32Rect(0, 0, (int)Bitmap.Width, (int)Bitmap.Height));
                 Bitmap.Unlock();
@@ -257,8 +255,8 @@ namespace WpfMaze.Mazegame
             // position player spawn
             do
             {
-                r = random.Next(1, Height - 2);
-                c = random.Next(1, Width - 2);
+                r = random.Next(1, Width - 2);
+                c = random.Next(1, Height - 2);
             } while (Board[c, r] != 0 ||
                      Board[c, r + 1] + Board[c, r - 1] + Board[c + 1, r] + Board[c - 1, r] < 3);
 
@@ -268,8 +266,8 @@ namespace WpfMaze.Mazegame
             // position exit point
             do
             {
-                r = random.Next(1, Height - 2);
-                c = random.Next(1, Width - 2);
+                r = random.Next(1, Width - 2);
+                c = random.Next(1, Height - 2);
             } while ((Board[c, r] != 0 ||
                      Board[c, r + 1] + Board[c, r - 1] + Board[c + 1, r] + Board[c - 1, r] < 3));
 
@@ -285,12 +283,9 @@ namespace WpfMaze.Mazegame
                 Point oldPlayerPosition = new Point() { X = this.Player.X, Y = this.Player.Y };
                 this.Player.X += deltaX;
                 this.Player.Y += deltaY;
-
-                this.onPlayerPositionChange?.Invoke(this, oldPlayerPosition);
+                this.changePlayerPosition(oldPlayerPosition);
                 if (this.IsSolved)
                     this.OnMazeSolved?.Invoke(this);
-
-
                 return true;
             }
 
@@ -322,8 +317,8 @@ namespace WpfMaze.Mazegame
 
         private static void DrawPixel(int x, int y, int[] Color, IntPtr backBuffer, int stride)
         {
-            var column = y;
-            var row = x;
+            var column = x;
+            var row = y;
             unsafe
             {
                 // Get a pointer to the back buffer.

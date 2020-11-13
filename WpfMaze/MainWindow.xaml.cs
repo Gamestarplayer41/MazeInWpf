@@ -15,45 +15,72 @@ namespace WpfMaze
 {
     public partial class MainWindow : Window
     {
-        private Maze maze;
+        private Maze Maze;
         private System.Windows.Point? MousePos;
-        public int GameHeight = 1000;
-        public int GameWidth = 1000;
+        public int GameHeight = 100;
+        public int GameWidth = 100;
 
         public MainWindow()
         {
             InitializeComponent();
-            RenderOptions.SetBitmapScalingMode(this,BitmapScalingMode.NearestNeighbor);
-            maze = new Maze(GameWidth, GameHeight, true);
-            maze.paintBitmaps();
-            this.injectMaze(maze);
-            this.MouseLeftButtonDown += this.left_MouseDown;
-            this.MouseLeftButtonUp += this.mouseUp;
-            this.MouseMove += this.canvas_MouseMove;
-            this.MouseWheel += transForm;
-            this.MouseRightButtonDown += (sender,e)=>maze.paintBitmaps(true);
-            maze.OnMazeSolved +=(maze)=> MessageBox.Show("Maze Solved", "Success", MessageBoxButton.OK);
+            RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
+            this.StackPanelBorder.MouseLeftButtonDown += this.onBitmapLeftMouseDown;
+            this.StackPanelBorder.MouseLeftButtonUp += this.onBitmapLeftMouseUp;
+            this.StackPanelBorder.MouseMove += this.onBitmapMouseMove;
+            this.StackPanelBorder.MouseWheel += onBitapMouseWheel;
+            this.CreateNewGame.Click += this.onCreateNewGame;
+            this.SizeChanged += (sender, e) => zoomToSize();
+            this.StackPanel.MouseRightButtonDown += (sender, e) => { this.Maze.paintBitmaps(); };
             this.KeyUp += this.movePlayer;
+            this.GameHeightInput.Text = Convert.ToString(this.GameHeight);
+            this.GameWidthInput.Text = Convert.ToString(this.GameWidth);
+            this.onCreateNewGame(null, null);
         }
+
+        private void onCreateNewGame(object sender, EventArgs e)
+        {
+            this.GameWidth = Convert.ToInt32(this.GameWidthInput.Text);
+            this.GameHeight = Convert.ToInt32(this.GameHeightInput.Text);
+            this.Maze = new Maze(GameWidth, GameHeight, true);
+            Maze.paintBitmaps();
+            this.injectMaze(this.Maze);
+            Maze.OnMazeSolved += (maze) => MessageBox.Show("Maze Solved", "Success", MessageBoxButton.OK);
+        }
+
+        private void zoomToSize()
+        {
+            var matrix = MatrixTransform.Matrix;
+            double widthOrHeight = Math.Min(this.StackPanelBorder.ActualWidth, this.StackPanelBorder.ActualHeight);
+            double zoomLevel = widthOrHeight / (matrix.M11 * this.GameWidth);
+            matrix.ScaleAtPrepend(zoomLevel, zoomLevel, 0, 0);
+            matrix.OffsetX = 0;
+            matrix.OffsetY = 0;
+            MatrixTransform.Matrix = matrix;
+        }
+
         private void movePlayer(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.W)
+            if (e.Key == Key.W)
             {
-                this.maze.MovePlayer(Direction.Up);
-            }else if(e.Key == Key.D)
+                this.Maze.MovePlayer(Direction.Up);
+            }
+            else if (e.Key == Key.D)
             {
-                this.maze.MovePlayer(Direction.Right);
-            }else if(e.Key == Key.S)
+                this.Maze.MovePlayer(Direction.Right);
+            }
+            else if (e.Key == Key.S)
             {
-                this.maze.MovePlayer(Direction.Down);
-            }else if (e.Key == Key.A)
+                this.Maze.MovePlayer(Direction.Down);
+            }
+            else if (e.Key == Key.A)
             {
-                this.maze.MovePlayer(Direction.Left);
-            }else if(e.Key == Key.X)
+                this.Maze.MovePlayer(Direction.Left);
+            }
+            else if (e.Key == Key.X)
             {
                 Thread t = new Thread(() =>
                 {
-                    Wallfollower w = new Wallfollower(maze);
+                    Wallfollower w = new Wallfollower(Maze);
                     w.SolveMaze();
                 });
                 t.Start();
@@ -66,7 +93,7 @@ namespace WpfMaze
 
         }
 
-        private void transForm(object sender, MouseWheelEventArgs e)
+        private void onBitapMouseWheel(object sender, MouseWheelEventArgs e)
         {
             var pos = e.GetPosition((UIElement)sender);
             var matrix = MatrixTransform.Matrix;
@@ -75,14 +102,14 @@ namespace WpfMaze
             MatrixTransform.Matrix = matrix;
         }
 
-        private void left_MouseDown(object sender, MouseButtonEventArgs e)
+        private void onBitmapLeftMouseDown(object sender, MouseButtonEventArgs e)
         {
             var viewport = (UIElement)sender;
             viewport.CaptureMouse();
             MousePos = e.GetPosition(viewport);
         }
 
-        private void canvas_MouseMove(object sender, MouseEventArgs e)
+        private void onBitmapMouseMove(object sender, MouseEventArgs e)
         {
             if (MousePos.HasValue)
             {
@@ -94,10 +121,15 @@ namespace WpfMaze
             }
         }
 
-        private void mouseUp(object sender, MouseButtonEventArgs e)
+        private void onBitmapLeftMouseUp(object sender, MouseButtonEventArgs e)
         {
             ((UIElement)sender).ReleaseMouseCapture();
             MousePos = null;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.zoomToSize();
         }
     }
 }
