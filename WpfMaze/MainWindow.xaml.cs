@@ -14,18 +14,17 @@ namespace WpfMaze
     public partial class MainWindow : Window
     {
         private Maze maze;
-        private System.Windows.Point StartCursorPosition;
-        private System.Windows.Point PanelPosition;
+        private System.Windows.Point? MousePos;
 
         public MainWindow()
         {
             InitializeComponent();
-            maze = new Maze(1000, 1000, true, 1);
+            maze = new Maze(3000, 3000, true, 1);
             maze.paintBitmaps();
             this.injectMaze(maze);
-            this.StackPanel.MouseLeftButtonDown += this.left_MouseDown;
-            this.StackPanel.MouseLeftButtonUp += this.mouseUp;
-            this.StackPanel.MouseMove += this.canvas_MouseMove;
+            this.MouseLeftButtonDown += this.left_MouseDown;
+            this.MouseLeftButtonUp += this.mouseUp;
+            this.MouseMove += this.canvas_MouseMove;
             this.MouseWheel += transForm;
         }
 
@@ -38,54 +37,36 @@ namespace WpfMaze
 
         private void transForm(object sender, MouseWheelEventArgs e)
         {
-            System.Windows.Media.Matrix m = this.StackPanel.RenderTransform.Value;
-
-            TransformGroup tGroup = new TransformGroup();
-            if (e.Delta > 0)
-            {
-                m.ScaleAt(
-                    1.5,
-                    1.5,
-                    e.GetPosition(this).X,
-                    e.GetPosition(this).Y);
-            }
-            else
-            {
-                m.ScaleAt(
-                    1.0 / 1.5,
-                    1.0 / 1.5,
-                    e.GetPosition(this).X,
-                    e.GetPosition(this).Y);
-            }
-            tGroup.Children.Add(new MatrixTransform(m));
-            tGroup.Children.Add(this.TranslateTransform);
-            this.StackPanel.RenderTransform = tGroup;
+            var pos = e.GetPosition((UIElement)sender);
+            var matrix = MatrixTransform.Matrix;
+            var scale = e.Delta > 0 ? 1.1 : 1 / 1.1;
+            matrix.ScaleAt(scale, scale, pos.X, pos.Y);
+            MatrixTransform.Matrix = matrix;
         }
 
         private void left_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            var tt = this.StackPanel.RenderTransform.Value;
-            StartCursorPosition = e.GetPosition(this);
-            PanelPosition = new System.Windows.Point(tt.OffsetX, tt.OffsetY);
-            this.StackPanel.CaptureMouse();
+            var viewport = (UIElement)sender;
+            viewport.CaptureMouse();
+            MousePos = e.GetPosition(viewport);
         }
 
         private void canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (this.StackPanel.IsMouseCaptured)
+            if (MousePos.HasValue)
             {
-                var matrix = this.StackPanel.RenderTransform.Value;
-                Vector strecke = StartCursorPosition - e.GetPosition(this);
-                double OffsetX = PanelPosition.X - strecke.X;
-                double OffsetY = PanelPosition.Y - strecke.Y;
-                matrix.Translate(OffsetX, OffsetY);
-                this.StackPanel.RenderTransform = new MatrixTransform(matrix);
+                var pos = e.GetPosition((UIElement)sender);
+                var matrix = MatrixTransform.Matrix;
+                matrix.Translate(pos.X - MousePos.Value.X, pos.Y - MousePos.Value.Y);
+                MatrixTransform.Matrix = matrix;
+                MousePos = pos;
             }
         }
 
         private void mouseUp(object sender, MouseButtonEventArgs e)
         {
-            this.StackPanel.ReleaseMouseCapture();
+            ((UIElement)sender).ReleaseMouseCapture();
+            MousePos = null;
         }
     }
 }
