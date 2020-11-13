@@ -1,5 +1,5 @@
 ﻿{
-  "version": "1.0.0",
+  "version": "0.1.0",
   "restore": {
     "projectUniqueName": "C:\\Users\\games\\Desktop\\WpfMaze\\WpfMaze\\WpfMaze.csproj",
     "projectName": "WpfMaze",
@@ -44,7 +44,7 @@
           "privateAssets": "none"
         }
       },
-      "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
+      "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100\\RuntimeIdentifierGraph.json"
     }
   }
 }

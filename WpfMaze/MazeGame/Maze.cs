@@ -5,14 +5,16 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using WpfMaze.MazeGame;
 
 namespace WpfMaze.Mazegame
 {
     internal class Maze
     {
-        public BitmapPart[] Bitmaps;
+        public WriteableBitmap Bitmap;
         public int Width => Board.GetLength(1);
 
 
@@ -22,12 +24,9 @@ namespace WpfMaze.Mazegame
 
         public Player Player { get; set; }
 
-
         public Finish Finish { get; set; }
 
         public bool IsSolved => Player == Finish;
-
-        public int Threads;
 
         internal delegate void MazeEvent(Maze maze);
 
@@ -35,94 +34,86 @@ namespace WpfMaze.Mazegame
 
         public event MazeEvent Rendering;
 
-        public Maze(int Width, int Height, bool randomize = false, int threads = 1)
+        public event MazeEvent OnMazeSolved;
+
+        internal delegate void playerPositionChange(Maze maze, Point player);
+
+        public event playerPositionChange onPlayerPositionChange;
+
+        public Maze(int width, int height, bool randomize = false)
         {
-            Board = new byte[Height, Width];
-            Threads = threads * threads;
+            Board = new byte[width, height];
             Application.Current.Dispatcher.Invoke(() =>
             {
-                Bitmaps = new BitmapPart[Threads];
-                for (var i = 0; i < Threads; i++)
-                {
-                    var dimensions = getBitmapPartSize();
-                    var startingPoint = getStartingPoint(i + 1);
-                    Bitmaps[i] = new BitmapPart(dimensions[1], dimensions[0], startingPoint.X, startingPoint.Y);
-                }
+                this.Bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgr32, null);
             });
+            this.onPlayerPositionChange += (maze, oldPlayerPosition) => this.changePlayerPosition(oldPlayerPosition);
             if (randomize)
                 this.randomize();
         }
 
-        public Point getStartingPoint(int threadNumber)
+        private void changePlayerPosition(Point oldPlayerPosition)
         {
-            var startingPoint = new Point();
-            var dimensions = getBitmapPartSize();
-
-            startingPoint.X = (int)(dimensions[1] * ((threadNumber - 1) % Math.Sqrt(Threads)));
-            startingPoint.Y = (int)(dimensions[0] * Math.Ceiling(threadNumber / Math.Sqrt(Threads) - 1));
-
-            return startingPoint;
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                this.Bitmap.Lock();
+                DrawPixel(oldPlayerPosition.X, oldPlayerPosition.Y, new int[3] { 255, 0, 255 }, this.Bitmap.BackBuffer, this.Bitmap.BackBufferStride);
+                DrawPixel(Player.X, Player.Y, new int[3] { 255, 0, 0 }, this.Bitmap.BackBuffer, this.Bitmap.BackBufferStride);
+                this.Bitmap.AddDirtyRect(new Int32Rect(oldPlayerPosition.X, oldPlayerPosition.Y, 1, 1));
+                this.Bitmap.AddDirtyRect(new Int32Rect(Player.X, Player.Y, 1, 1));
+                this.Bitmap.Unlock();
+            });
         }
 
-        /**
-         * <returns>[0]=>y, [1]=>x</returns>
-         */
-        public int[] getBitmapPartSize()
+        public async void paintBitmaps(bool black = false)
         {
-            var dimension = new int[2];
-
-            dimension[0] = (int)(Height / Math.Sqrt(Threads));
-            dimension[1] = (int)(Width / Math.Sqrt(Threads));
-
-
-            return dimension;
-        }
-
-        public async void paintBitmaps()
-        {
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
             Rendering?.Invoke(this);
             List<Task> tasks = new List<Task>();
-            foreach (var bitmap in Bitmaps)
-            {
-                Stopwatch watch = new Stopwatch();
-               (IntPtr,int,int,int) t =  Application.Current.Dispatcher.Invoke(() =>
-                {
-                    bitmap.Bitmap.Lock();
-
-                    (IntPtr, int,int,int) tupel = (bitmap.Bitmap.BackBuffer, bitmap.Bitmap.BackBufferStride, (int) bitmap.Bitmap.Width,(int) bitmap.Bitmap.Height);
-                    return tupel;
-                });
-                Console.WriteLine(watch.ElapsedMilliseconds);
-                tasks.Add(Task.Run(() =>
+            (IntPtr, int, int, int) t = Application.Current.Dispatcher.Invoke(() =>
                {
-                   for (int x = 1; x != t.Item4 - 1; x++)
+                   Bitmap.Lock();
+
+                   (IntPtr, int, int, int) tupel = (Bitmap.BackBuffer, Bitmap.BackBufferStride, (int)Bitmap.Width, (int)Bitmap.Height);
+                   return tupel;
+               });
+            await Task.Run(() =>
+           {
+               for (int x = 0; x < t.Item3 - 1; x++)
+               {
+                   for (int y = 0; y < t.Item4 - 1; y++)
                    {
-                       for (int y = 1; y != t.Item3 - 1; y++)
+                       if (x == Player.X && y == Player.Y)
                        {
-                           if (Board[x + bitmap.Start.X, y + bitmap.Start.Y] == 1)
-                           {
-                               BitmapPart.DrawPixel(x, y, new int[3] { 0, 0, 0 }, t.Item1, t.Item2);
-                           }
-                           else
-                           {
-                               BitmapPart.DrawPixel(x, y, new int[3] { 255, 255, 255 }, t.Item1, t.Item2);
-                           }
+                           BitmapPart.DrawPixel(x, y, new int[3] { 255, 0, 0 }, t.Item1, t.Item2);
                        }
-
+                       else if (x == Finish.X && y == Finish.Y)
+                       {
+                           BitmapPart.DrawPixel(x, y, new int[3] { 0, 0, 255 }, t.Item1, t.Item2);
+                       }
+                       else if (Board[x, y] == 1)
+                       {
+                           BitmapPart.DrawPixel(x, y, new int[3] { 0, 0, 0 }, t.Item1, t.Item2);
+                       }
+                       else
+                       {
+                           BitmapPart.DrawPixel(x, y, (black) ? new int[3] { 0, 0, 0 } : new int[3] { 255, 255, 255 }, t.Item1, t.Item2);
+                       }
                    }
-               }));
-            }
-            await Task.WhenAll(tasks);
-            foreach (var bitmap in Bitmaps)
-            {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    bitmap.Bitmap.AddDirtyRect(new Int32Rect(0, 0, (int)bitmap.Bitmap.Width, (int)bitmap.Bitmap.Height));
-                    bitmap.Bitmap.Unlock();
-                });
 
-            }
+               }
+           });
+            await Task.WhenAll(tasks);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Bitmap.AddDirtyRect(new Int32Rect(0, 0, (int)Bitmap.Width, (int)Bitmap.Height));
+                Bitmap.Unlock();
+            });
+
             Rendered?.Invoke(this);
+            watch.Stop();
+            Console.WriteLine(watch.ElapsedMilliseconds);
         }
 
         public void randomize()
@@ -273,21 +264,23 @@ namespace WpfMaze.Mazegame
             do
             {
                 r = random.Next(1, Height - 2);
-                c = random.Next(1, Height - 2);
-            } while (Board[r, c] != 0 ||
-                     Board[r, c + 1] + Board[r, c - 1] + Board[r + 1, c] + Board[r - 1, c] < 3);
+                c = random.Next(1, Width - 2);
+            } while (Board[c, r] != 0 ||
+                     Board[c, r + 1] + Board[c, r - 1] + Board[c + 1, r] + Board[c - 1, r] < 3);
 
             Player = new Player(c, r);
+            Board[c, r] = 3;
 
             // position exit point
             do
             {
                 r = random.Next(1, Height - 2);
-                c = random.Next(1, Height - 2);
-            } while (Board[r, c] != 0 ||
-                     Board[r, c + 1] + Board[r, c - 1] + Board[r + 1, c] + Board[r - 1, c] < 3);
+                c = random.Next(1, Width - 2);
+            } while ((Board[c, r] != 0 ||
+                     Board[c, r + 1] + Board[c, r - 1] + Board[c + 1, r] + Board[c - 1, r] < 3));
 
             Finish = new Finish(c, r);
+            Board[c, r] = 4;
         }
 
         public bool MovePlayer(Direction direction)
@@ -295,14 +288,13 @@ namespace WpfMaze.Mazegame
             if (this.PlayerCanMove(direction))
             {
                 var (deltaX, deltaY) = direction.GetMovementDeltas();
-
+                Point oldPlayerPosition = new Point() { X = this.Player.X, Y = this.Player.Y };
                 this.Player.X += deltaX;
                 this.Player.Y += deltaY;
 
-                //this.OnPlayerPositionChange?.Invoke(this, 1);
-
-                //if (this.IsSolved)
-                    //this.OnMazeSolved?.Invoke(new Maze(100, 100, true), 1);
+                this.onPlayerPositionChange?.Invoke(this, oldPlayerPosition);
+                if (this.IsSolved)
+                    this.OnMazeSolved?.Invoke(this);
 
 
                 return true;
@@ -331,7 +323,32 @@ namespace WpfMaze.Mazegame
                 return false;
 
             var (deltaX, deltaY) = direction.GetMovementDeltas();
-            return Board[Player.Y + deltaY, Player.X + deltaX] != 1;
+            return Board[Player.X + deltaX, Player.Y + deltaY] != 1;
+        }
+
+        private static void DrawPixel(int x, int y, int[] Color, IntPtr backBuffer, int stride)
+        {
+            var column = y;
+            var row = x;
+            unsafe
+            {
+                // Get a pointer to the back buffer.
+
+                // Find the address of the pixel to draw.
+                backBuffer += row * stride;
+                backBuffer += column * 4;
+
+                // Compute the pixel's color.
+                var color_data = Color[0] << 16; // R
+                color_data |= Color[1] << 8; // G
+                color_data |= Color[2] << 0; // B
+
+                // Assign the color data to the pixel.
+                *(int*)backBuffer = color_data;
+            }
+            // Specify the area of the bitmap that changed.
+            //Application.Current.Dispatcher.Invoke(() =>
+            //Bitmap.AddDirtyRect(new Int32Rect(column, row, 1, 1)));
         }
     }
 }

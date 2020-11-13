@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using WpfMaze.Mazegame;
 
 namespace WpfMaze.MazeGame.Algorithms
@@ -18,11 +19,11 @@ namespace WpfMaze.MazeGame.Algorithms
 
         public void SolveMaze()
         {
+            this.FollowWall();
         }
 
         private void FollowWall()
         {
-            Console.WriteLine("asd");
             while (!this.Maze.IsSolved)
             {
                 if (this.Maze.PlayerCanMove(DirectionResolver(IntDirCalc(dir, -1))))

@@ -10,6 +10,9 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/A9C37662-579A-499A-A4DE-B3C85349280D/1E0/ExceptionDispatchInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/A9C37662-579A-499A-A4DE-B3C85349280D/2A/Math.cs" root0="SKIP_HIGHLIGHTING" />
@@ -26,6 +29,7 @@
     </option>
   </component>
   <component name="ProjectId" id="1jvoGEt0sIlEsJ6D0dJvRcgwUhe" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -80,6 +84,9 @@
       <workItem from="1604842488273" duration="1316000" />
       <workItem from="1604847725490" duration="737000" />
       <workItem from="1604849136540" duration="598000" />
+      <workItem from="1605269265138" duration="28000" />
+      <workItem from="1605269576367" duration="40000" />
+      <workItem from="1605287900823" duration="588000" />
     </task>
     <servers />
   </component>
@@ -100,22 +107,26 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="924" height="630" key="DebuggerActiveHint/0.0.1920.1040@0.0.1920.1040" timestamp="1604843370000" />
-    <state width="1877" height="367" key="GridCell.Tab.0.bottom" timestamp="1604849734308">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1877" height="272" key="GridCell.Tab.0.bottom" timestamp="1605288487574">
+      <screen x="0" y="0" width="1920" height="1042" />
     </state>
     <state width="1877" height="367" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1604849734308" />
-    <state width="1877" height="367" key="GridCell.Tab.0.center" timestamp="1604849734308">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1877" height="272" key="GridCell.Tab.0.bottom/0.0.1920.1042@0.0.1920.1042" timestamp="1605288487574" />
+    <state width="1877" height="272" key="GridCell.Tab.0.center" timestamp="1605288487573">
+      <screen x="0" y="0" width="1920" height="1042" />
     </state>
     <state width="1877" height="367" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1604849734308" />
-    <state width="1877" height="367" key="GridCell.Tab.0.left" timestamp="1604849734308">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1877" height="272" key="GridCell.Tab.0.center/0.0.1920.1042@0.0.1920.1042" timestamp="1605288487573" />
+    <state width="1877" height="272" key="GridCell.Tab.0.left" timestamp="1605288487573">
+      <screen x="0" y="0" width="1920" height="1042" />
     </state>
     <state width="1877" height="367" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1604849734308" />
-    <state width="1877" height="367" key="GridCell.Tab.0.right" timestamp="1604849734308">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state width="1877" height="272" key="GridCell.Tab.0.left/0.0.1920.1042@0.0.1920.1042" timestamp="1605288487573" />
+    <state width="1877" height="272" key="GridCell.Tab.0.right" timestamp="1605288487573">
+      <screen x="0" y="0" width="1920" height="1042" />
     </state>
     <state width="1877" height="367" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1604849734308" />
+    <state width="1877" height="272" key="GridCell.Tab.0.right/0.0.1920.1042@0.0.1920.1042" timestamp="1605288487573" />
     <state width="1877" height="367" key="GridCell.Tab.1.bottom" timestamp="1604849734308">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

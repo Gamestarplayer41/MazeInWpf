@@ -13,6 +13,11 @@
         <e p="MainWindow.xaml" t="Include" />
         <e p="MainWindow.xaml.cs" t="Include" />
         <e p="MazeGame" t="Include">
+          <e p="Algorithms" t="Include">
+            <e p="AAlgorithm.cs" t="Include" />
+            <e p="IAlgorithm.cs" t="Include" />
+            <e p="Wallfollower.cs" t="Include" />
+          </e>
           <e p="BitmapPart.cs" t="Include" />
           <e p="Color.cs" t="Include" />
           <e p="Direction.cs" t="Include" />
@@ -23,13 +28,16 @@
           <e p="Point.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
-          <e p="Debug" t="Include">
+          <e p="Release" t="Include">
             <e p="netcoreapp3.1" t="Include">
               <e p="App.g.cs" t="Include" />
               <e p="MainWindow.g.cs" t="Include" />
               <e p="WpfMaze.AssemblyInfo.cs" t="Include" />
             </e>
           </e>
+        </e>
+        <e p="Properties" t="Include">
+          <e p="launchSettings.json" t="Include" />
         </e>
         <e p="WpfMaze.csproj" t="IncludeRecursive" />
       </e>

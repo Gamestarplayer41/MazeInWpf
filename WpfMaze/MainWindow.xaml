@@ -11,7 +11,7 @@
             <MatrixTransform x:Name="MatrixTransform" />
         </StackPanel.RenderTransform>
         <Canvas>
-            <Image x:Name="Bitmap"></Image>
+            <Image x:Name="Bitmap" Stretch="None"></Image>
         </Canvas>
     </StackPanel>
 </Window>

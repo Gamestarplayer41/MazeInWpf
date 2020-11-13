@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfMaze.Mazegame;
+using WpfMaze.MazeGame.Algorithms;
 
 namespace WpfMaze
 {
@@ -15,23 +16,51 @@ namespace WpfMaze
     {
         private Maze maze;
         private System.Windows.Point? MousePos;
+        public int GameHeight = 1000;
+        public int GameWidth = 1000;
 
         public MainWindow()
         {
             InitializeComponent();
-            maze = new Maze(3000, 3000, true, 1);
+            RenderOptions.SetBitmapScalingMode(this,BitmapScalingMode.NearestNeighbor);
+            maze = new Maze(GameWidth, GameHeight, true);
             maze.paintBitmaps();
             this.injectMaze(maze);
             this.MouseLeftButtonDown += this.left_MouseDown;
             this.MouseLeftButtonUp += this.mouseUp;
             this.MouseMove += this.canvas_MouseMove;
             this.MouseWheel += transForm;
+            this.MouseRightButtonDown += (sender,e)=>maze.paintBitmaps(true);
+            maze.OnMazeSolved +=(maze)=> MessageBox.Show("Maze Solved", "Success", MessageBoxButton.OK);
+            this.KeyUp += this.movePlayer;
         }
-
+        private void movePlayer(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.W)
+            {
+                this.maze.MovePlayer(Direction.Up);
+            }else if(e.Key == Key.D)
+            {
+                this.maze.MovePlayer(Direction.Right);
+            }else if(e.Key == Key.S)
+            {
+                this.maze.MovePlayer(Direction.Down);
+            }else if (e.Key == Key.A)
+            {
+                this.maze.MovePlayer(Direction.Left);
+            }else if(e.Key == Key.X)
+            {
+                Task.Run(() =>
+                {
+                    Wallfollower w = new Wallfollower(maze);
+                    w.SolveMaze();
+                });
+            }
+        }
 
         private void injectMaze(Maze maze)
         {
-            Bitmap.Source = maze.Bitmaps[0].Bitmap;
+            Bitmap.Source = maze.Bitmap;
 
         }
 
