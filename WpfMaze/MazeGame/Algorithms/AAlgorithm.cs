@@ -5,12 +5,10 @@ using WpfMaze.Mazegame;
 
 namespace WpfMaze.MazeGame.Algorithms
 {
-    abstract class AAlgorithm<T>
+    abstract class AAlgorithm
     {
         public Maze Maze;
 
-        public AAlgorithm(T maze)
-        {
-        }
+        public bool stopThread = false;
     }
 }

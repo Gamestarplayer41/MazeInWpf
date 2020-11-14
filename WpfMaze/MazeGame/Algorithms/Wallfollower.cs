@@ -6,25 +6,28 @@ using WpfMaze.Mazegame;
 
 namespace WpfMaze.MazeGame.Algorithms
 {
-     class Wallfollower : AAlgorithm<Maze>, IAlgorithm
+    class Wallfollower : AAlgorithm, IAlgorithm
     {
-        public Maze Maze;
+        public Maze maze;
+        public bool stopThread { get; set; } = false;
         private int dir = 1;
         private Direction Heading = Direction.Down;
 
-        public Wallfollower(Maze maze) : base(maze)
-        {
-            this.Maze = maze;
-        }
 
         public void SolveMaze()
         {
             this.FollowWall();
         }
 
+        public void injectMaze(Maze maze)
+        {
+            this.Maze = maze;
+        }
+
+
         private void FollowWall()
         {
-            while (!this.Maze.IsSolved)
+            while (!this.Maze.IsSolved && !stopThread)
             {
                 if (this.Maze.PlayerCanMove(DirectionResolver(IntDirCalc(dir, -1))))
                 {

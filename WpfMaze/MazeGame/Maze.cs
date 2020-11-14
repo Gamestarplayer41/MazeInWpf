@@ -12,7 +12,7 @@ using WpfMaze.MazeGame;
 
 namespace WpfMaze.Mazegame
 {
-    internal class Maze
+    public class Maze
     {
         public WriteableBitmap Bitmap;
         public int Width => Board.GetLength(0);
@@ -28,7 +28,7 @@ namespace WpfMaze.Mazegame
 
         public bool IsSolved => Player == Finish;
 
-        internal delegate void MazeEvent(Maze maze);
+        public delegate void MazeEvent(Maze maze);
 
         public event MazeEvent Rendered;
 
@@ -36,7 +36,7 @@ namespace WpfMaze.Mazegame
 
         public event MazeEvent OnMazeSolved;
 
-        internal delegate void playerPositionChange(Maze maze, Point player);
+        public delegate void playerPositionChange(Maze maze, Point player);
 
         public event playerPositionChange onPlayerPositionChange;
 

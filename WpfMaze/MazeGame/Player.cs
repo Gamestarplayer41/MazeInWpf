@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WpfMaze.Mazegame
 {
-    class Player : Point
+    public class Player : Point
     {
 
         public Player(int X, int Y)

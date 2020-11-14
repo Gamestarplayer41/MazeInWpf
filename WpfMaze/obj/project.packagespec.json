@@ -1,5 +1,5 @@
 ﻿{
-  "version": "0.1.0",
+  "version": "1.0.0",
   "restore": {
     "projectUniqueName": "C:\\Users\\games\\Desktop\\WpfMaze\\WpfMaze\\WpfMaze.csproj",
     "projectName": "WpfMaze",
@@ -7,14 +7,14 @@
     "outputPath": "C:\\Users\\games\\Desktop\\WpfMaze\\WpfMaze\\obj\\",
     "projectStyle": "PackageReference",
     "originalTargetFrameworks": [
-      "netcoreapp3.1"
+      "net50-windows"
     ],
     "sources": {
       "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
       "https://api.nuget.org/v3/index.json": {}
     },
     "frameworks": {
-      "netcoreapp3.1": {
+      "netcoreapp5.0": {
         "projectReferences": {}
       }
     },
@@ -25,7 +25,7 @@
     }
   },
   "frameworks": {
-    "netcoreapp3.1": {
+    "netcoreapp5.0": {
       "imports": [
         "net461",
         "net462",

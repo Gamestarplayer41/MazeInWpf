@@ -23,8 +23,13 @@
         <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Color.cs" />
         <option value="$PROJECT_DIR$/WpfMaze/MainWindow.xaml" />
         <option value="$PROJECT_DIR$/WpfMaze/MazeGame/BitmapPart.cs" />
-        <option value="$PROJECT_DIR$/WpfMaze/MainWindow.xaml.cs" />
+        <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Player.cs" />
         <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Maze.cs" />
+        <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Algorithms/AAlgorithm.cs" />
+        <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Algorithms/IAlgorithm.cs" />
+        <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Algorithms/Wallfollower.cs" />
+        <option value="$PROJECT_DIR$/WpfMaze/MainWindow.xaml.cs" />
+        <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Algorithms/AlgorithmManager.cs" />
       </list>
     </option>
   </component>
@@ -87,6 +92,7 @@
       <workItem from="1605269265138" duration="28000" />
       <workItem from="1605269576367" duration="40000" />
       <workItem from="1605287900823" duration="588000" />
+      <workItem from="1605384985091" duration="3888000" />
     </task>
     <servers />
   </component>
@@ -107,26 +113,26 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="924" height="630" key="DebuggerActiveHint/0.0.1920.1040@0.0.1920.1040" timestamp="1604843370000" />
-    <state width="1877" height="272" key="GridCell.Tab.0.bottom" timestamp="1605288487574">
+    <state width="1877" height="272" key="GridCell.Tab.0.bottom" timestamp="1605388874452">
       <screen x="0" y="0" width="1920" height="1042" />
     </state>
     <state width="1877" height="367" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1604849734308" />
-    <state width="1877" height="272" key="GridCell.Tab.0.bottom/0.0.1920.1042@0.0.1920.1042" timestamp="1605288487574" />
-    <state width="1877" height="272" key="GridCell.Tab.0.center" timestamp="1605288487573">
+    <state width="1877" height="272" key="GridCell.Tab.0.bottom/0.0.1920.1042@0.0.1920.1042" timestamp="1605388874452" />
+    <state width="1877" height="272" key="GridCell.Tab.0.center" timestamp="1605388874452">
       <screen x="0" y="0" width="1920" height="1042" />
     </state>
     <state width="1877" height="367" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1604849734308" />
-    <state width="1877" height="272" key="GridCell.Tab.0.center/0.0.1920.1042@0.0.1920.1042" timestamp="1605288487573" />
-    <state width="1877" height="272" key="GridCell.Tab.0.left" timestamp="1605288487573">
+    <state width="1877" height="272" key="GridCell.Tab.0.center/0.0.1920.1042@0.0.1920.1042" timestamp="1605388874452" />
+    <state width="1877" height="272" key="GridCell.Tab.0.left" timestamp="1605388874452">
       <screen x="0" y="0" width="1920" height="1042" />
     </state>
     <state width="1877" height="367" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1604849734308" />
-    <state width="1877" height="272" key="GridCell.Tab.0.left/0.0.1920.1042@0.0.1920.1042" timestamp="1605288487573" />
-    <state width="1877" height="272" key="GridCell.Tab.0.right" timestamp="1605288487573">
+    <state width="1877" height="272" key="GridCell.Tab.0.left/0.0.1920.1042@0.0.1920.1042" timestamp="1605388874452" />
+    <state width="1877" height="272" key="GridCell.Tab.0.right" timestamp="1605388874452">
       <screen x="0" y="0" width="1920" height="1042" />
     </state>
     <state width="1877" height="367" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1604849734308" />
-    <state width="1877" height="272" key="GridCell.Tab.0.right/0.0.1920.1042@0.0.1920.1042" timestamp="1605288487573" />
+    <state width="1877" height="272" key="GridCell.Tab.0.right/0.0.1920.1042@0.0.1920.1042" timestamp="1605388874452" />
     <state width="1877" height="367" key="GridCell.Tab.1.bottom" timestamp="1604849734308">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -195,10 +201,15 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="552" y="252" key="Rider.ProjectTemplateDialog.Size/0.0.1920.1040@0.0.1920.1040" timestamp="1604771070281" />
-    <state x="461" y="165" key="SettingsEditor" timestamp="1604847971126">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="461" y="165" key="SettingsEditor" timestamp="1605385099831">
+      <screen x="0" y="0" width="1920" height="1042" />
     </state>
     <state x="461" y="165" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1604847971126" />
+    <state x="461" y="165" key="SettingsEditor/0.0.1920.1042@0.0.1920.1042" timestamp="1605385099831" />
+    <state x="623" y="226" width="672" height="678" key="search.everywhere.popup" timestamp="1605386673310">
+      <screen x="0" y="0" width="1920" height="1042" />
+    </state>
+    <state x="623" y="226" width="672" height="678" key="search.everywhere.popup/0.0.1920.1042@0.0.1920.1042" timestamp="1605386673310" />
   </component>
   <component name="XDebuggerManager">
     <pin-to-top-manager>

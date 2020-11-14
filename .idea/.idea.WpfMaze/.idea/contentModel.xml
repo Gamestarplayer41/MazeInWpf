@@ -15,6 +15,7 @@
         <e p="MazeGame" t="Include">
           <e p="Algorithms" t="Include">
             <e p="AAlgorithm.cs" t="Include" />
+            <e p="AlgorithmManager.cs" t="Include" />
             <e p="IAlgorithm.cs" t="Include" />
             <e p="Wallfollower.cs" t="Include" />
           </e>
@@ -29,7 +30,7 @@
         </e>
         <e p="obj" t="ExcludeRecursive">
           <e p="Release" t="Include">
-            <e p="netcoreapp3.1" t="Include">
+            <e p="net5.0-windows" t="Include">
               <e p="App.g.cs" t="Include" />
               <e p="MainWindow.g.cs" t="Include" />
               <e p="WpfMaze.AssemblyInfo.cs" t="Include" />

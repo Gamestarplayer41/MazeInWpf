@@ -20,9 +20,8 @@ namespace WpfMaze
         private System.Windows.Point? MousePos;
         public int GameHeight = 10;
         public int GameWidth = 10;
-
-        public List<Thread> threads = new List<Thread>();
-
+        public AlgorithmManager AlgorithmManager = new AlgorithmManager();
+        
         public MainWindow()
         {
             InitializeComponent();
@@ -38,31 +37,37 @@ namespace WpfMaze
             this.GameHeightInput.Text = Convert.ToString(this.GameHeight);
             this.GameWidthInput.Text = Convert.ToString(this.GameWidth);
             this.onCreateNewGame(null, null);
-            Button b = new Button();
-            b.Margin = new Thickness() { Bottom = 20, Top = 20, Left = 20, Right = 20 };
-            b.Click += (sender, e) =>
-            {
-                new Thread(() =>
-                {
-                    Wallfollower w = new Wallfollower(Maze);
-                    w.SolveMaze();
-                }).Start();
-            };
-            b.Content = "Wallfollower";
 
-            this.SolvingButtons.Children.Add(b);
+            foreach (var algorithm in AlgorithmManager.Alorithms)
+            {
+                Button b = new Button();
+                b.Content = algorithm;
+                b.Click += (sender, e) =>
+                {
+                    AlgorithmManager.injectMaze(algorithm,this.Maze);
+                    AlgorithmManager.assignThread(algorithm);
+                    AlgorithmManager.startThread(algorithm);
+                };
+                b.Margin = new Thickness(){Top = 20,Left = 20,Right = 20,Bottom = 20};
+                this.SolvingButtons.Children.Add(b);
+            }
+            
+            Button stopAllThreads = new Button();
+            stopAllThreads.Content = "STOP";
+            stopAllThreads.Click += (sender, e) =>
+            {
+                AlgorithmManager
+            };
         }
 
         private void onCreateNewGame(object sender, EventArgs e)
         {
-
             this.GameWidth = Convert.ToInt32(this.GameWidthInput.Text);
             this.GameHeight = Convert.ToInt32(this.GameHeightInput.Text);
             this.Maze = new Maze(GameWidth, GameHeight, true);
             Maze.paintBitmaps();
             this.injectMaze(this.Maze);
             Maze.OnMazeSolved += (maze) => MessageBox.Show("Labyrinth Gelöst", "Erfolg", MessageBoxButton.OK);
-
         }
 
         private void zoomToSize()
@@ -99,12 +104,11 @@ namespace WpfMaze
         private void injectMaze(Maze maze)
         {
             Bitmap.Source = maze.Bitmap;
-
         }
 
         private void onBitapMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            var pos = e.GetPosition((UIElement)sender);
+            var pos = e.GetPosition((UIElement) sender);
             var matrix = MatrixTransform.Matrix;
             var scale = e.Delta > 0 ? 1.1 : 1 / 1.1;
             matrix.ScaleAt(scale, scale, pos.X, pos.Y);
@@ -113,7 +117,7 @@ namespace WpfMaze
 
         private void onBitmapLeftMouseDown(object sender, MouseButtonEventArgs e)
         {
-            var viewport = (UIElement)sender;
+            var viewport = (UIElement) sender;
             viewport.CaptureMouse();
             MousePos = e.GetPosition(viewport);
         }
@@ -122,7 +126,7 @@ namespace WpfMaze
         {
             if (MousePos.HasValue)
             {
-                var pos = e.GetPosition((UIElement)sender);
+                var pos = e.GetPosition((UIElement) sender);
                 var matrix = MatrixTransform.Matrix;
                 matrix.Translate(pos.X - MousePos.Value.X, pos.Y - MousePos.Value.Y);
                 MatrixTransform.Matrix = matrix;
@@ -132,7 +136,7 @@ namespace WpfMaze
 
         private void onBitmapLeftMouseUp(object sender, MouseButtonEventArgs e)
         {
-            ((UIElement)sender).ReleaseMouseCapture();
+            ((UIElement) sender).ReleaseMouseCapture();
             MousePos = null;
         }
 
