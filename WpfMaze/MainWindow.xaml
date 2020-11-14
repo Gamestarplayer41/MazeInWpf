@@ -32,6 +32,8 @@
             <TextBox x:Name="GameWidthInput" Margin="10 0 10 0"></TextBox>
             <TextBlock Margin="10 10 10 0">Height:</TextBlock>
             <TextBox x:Name="GameHeightInput" Margin="10 0 10 0"></TextBox>
+            <StackPanel x:Name="SolvingButtons">
+            </StackPanel>
         </StackPanel>
     </Grid>
 

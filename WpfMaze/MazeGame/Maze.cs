@@ -15,10 +15,10 @@ namespace WpfMaze.Mazegame
     internal class Maze
     {
         public WriteableBitmap Bitmap;
-        public int Width => Board.GetLength(1);
+        public int Width => Board.GetLength(0);
 
 
-        public int Height => Board.GetLength(0);
+        public int Height => Board.GetLength(1);
 
         public byte[,] Board { get; set; }
 
@@ -115,8 +115,8 @@ namespace WpfMaze.Mazegame
             int r = 0, c = 0;
 
             // Start with a grid full of walls.
-            for (r = 0; r < Height; r++)
-                for (c = 0; c < Width; c++)
+            for (r = 0; r < Width; r++)
+                for (c = 0; c < Height; c++)
                     Board[r, c] = 1;
 
             // Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list.
@@ -257,22 +257,22 @@ namespace WpfMaze.Mazegame
             {
                 r = random.Next(1, Width - 2);
                 c = random.Next(1, Height - 2);
-            } while (Board[c, r] != 0 ||
-                     Board[c, r + 1] + Board[c, r - 1] + Board[c + 1, r] + Board[c - 1, r] < 3);
+            } while (Board[r, c] != 0 ||
+                     Board[r, c + 1] + Board[r, c - 1] + Board[r + 1, c] + Board[r - 1, c] < 3);
 
-            Player = new Player(c, r);
-            Board[c, r] = 3;
+            Player = new Player(r, c);
+            Board[r, c] = 3;
 
             // position exit point
             do
             {
                 r = random.Next(1, Width - 2);
                 c = random.Next(1, Height - 2);
-            } while ((Board[c, r] != 0 ||
-                     Board[c, r + 1] + Board[c, r - 1] + Board[c + 1, r] + Board[c - 1, r] < 3));
+            } while ((Board[r, c] != 0 ||
+                     Board[r, c + 1] + Board[r, c - 1] + Board[r + 1, c] + Board[r - 1, c] < 3));
 
-            Finish = new Finish(c, r);
-            Board[c, r] = 4;
+            Finish = new Finish(r, c);
+            Board[r, c] = 4;
         }
 
         public bool MovePlayer(Direction direction)
@@ -297,11 +297,11 @@ namespace WpfMaze.Mazegame
         {
             if (row <= 0)
                 return false;
-            if (row > Height - 2)
+            if (row > Width - 2)
                 return false;
             if (col <= 0)
                 return false;
-            if (col > Width - 2)
+            if (col > Height - 2)
                 return false;
             return true;
         }

@@ -35,6 +35,17 @@ namespace WpfMaze
             this.GameHeightInput.Text = Convert.ToString(this.GameHeight);
             this.GameWidthInput.Text = Convert.ToString(this.GameWidth);
             this.onCreateNewGame(null, null);
+
+            Button b = new Button();
+            b.Margin = new Thickness() { Bottom = 20, Top = 20, Left = 20, Right = 20 };
+            b.Click += (sender, e) =>
+            {
+                Wallfollower w = new Wallfollower(Maze);
+                w.SolveMaze();
+            };
+            b.Content = "Wallfollower";
+
+            this.SolvingButtons.Children.Add(b);
         }
 
         private void onCreateNewGame(object sender, EventArgs e)
