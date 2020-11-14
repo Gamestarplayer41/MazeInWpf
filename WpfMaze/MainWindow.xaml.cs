@@ -17,8 +17,8 @@ namespace WpfMaze
     {
         private Maze Maze;
         private System.Windows.Point? MousePos;
-        public int GameHeight = 100;
-        public int GameWidth = 100;
+        public int GameHeight = 10;
+        public int GameWidth = 10;
 
         public MainWindow()
         {

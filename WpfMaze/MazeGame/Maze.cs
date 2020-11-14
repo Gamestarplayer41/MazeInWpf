@@ -81,19 +81,19 @@ namespace WpfMaze.Mazegame
                    {
                        if (x == Player.X && y == Player.Y)
                        {
-                           DrawPixel(x+1, y+1, new int[3] { 255, 0, 0 }, t.Item1, t.Item2);
+                           DrawPixel(x, y, new int[3] { 255, 0, 0 }, t.Item1, t.Item2);
                        }
                        else if (x == Finish.X && y == Finish.Y)
                        {
-                           DrawPixel(x+1, y+1, new int[3] { 0, 0, 255 }, t.Item1, t.Item2);
+                           DrawPixel(x, y, new int[3] { 0, 0, 255 }, t.Item1, t.Item2);
                        }
                        else if (Board[x, y] == 1)
                        {
-                           DrawPixel(x+1, y+1, new int[3] { 0, 0, 0 }, t.Item1, t.Item2);
+                           DrawPixel(x, y, new int[3] { 0, 0, 0 }, t.Item1, t.Item2);
                        }
                        else
                        {
-                           DrawPixel(x+1, y+1, (black) ? new int[3] { 0, 0, 0 } : new int[3] { 255, 255, 255 }, t.Item1, t.Item2);
+                           DrawPixel(x, y, (black) ? new int[3] { 0, 0, 0 } : new int[3] { 255, 255, 255 }, t.Item1, t.Item2);
                        }
                    }
 
@@ -122,8 +122,8 @@ namespace WpfMaze.Mazegame
             // Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list.
             var walls = new List<(int Row, int Col)>();
 
-            r = random.Next(1, Height - 2);
-            c = random.Next(1, Width - 2);
+            r = random.Next(1, Width - 2);
+            c = random.Next(1, Height - 2);
 
             Board[r, c] = 0;
 
