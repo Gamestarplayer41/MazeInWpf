@@ -1,5 +1,5 @@
 ﻿WpfMaze
-0.1.0.0
+1.0.0.0
 
 winexe
 C#
@@ -16,5 +16,5 @@ C:\Users\games\Desktop\WpfMaze\WpfMaze\App.xaml
 193582816078
 MainWindow.xaml;
 
-True
+False
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -20,6 +21,8 @@ namespace WpfMaze
         public int GameHeight = 10;
         public int GameWidth = 10;
 
+        public List<Thread> threads = new List<Thread>();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -35,13 +38,15 @@ namespace WpfMaze
             this.GameHeightInput.Text = Convert.ToString(this.GameHeight);
             this.GameWidthInput.Text = Convert.ToString(this.GameWidth);
             this.onCreateNewGame(null, null);
-
             Button b = new Button();
             b.Margin = new Thickness() { Bottom = 20, Top = 20, Left = 20, Right = 20 };
             b.Click += (sender, e) =>
             {
-                Wallfollower w = new Wallfollower(Maze);
-                w.SolveMaze();
+                new Thread(() =>
+                {
+                    Wallfollower w = new Wallfollower(Maze);
+                    w.SolveMaze();
+                }).Start();
             };
             b.Content = "Wallfollower";
 
@@ -50,12 +55,14 @@ namespace WpfMaze
 
         private void onCreateNewGame(object sender, EventArgs e)
         {
+
             this.GameWidth = Convert.ToInt32(this.GameWidthInput.Text);
             this.GameHeight = Convert.ToInt32(this.GameHeightInput.Text);
             this.Maze = new Maze(GameWidth, GameHeight, true);
             Maze.paintBitmaps();
             this.injectMaze(this.Maze);
-            Maze.OnMazeSolved += (maze) => MessageBox.Show("Maze Solved", "Success", MessageBoxButton.OK);
+            Maze.OnMazeSolved += (maze) => MessageBox.Show("Labyrinth Gelöst", "Erfolg", MessageBoxButton.OK);
+
         }
 
         private void zoomToSize()
@@ -86,15 +93,6 @@ namespace WpfMaze
             else if (e.Key == Key.A)
             {
                 this.Maze.MovePlayer(Direction.Left);
-            }
-            else if (e.Key == Key.X)
-            {
-                Thread t = new Thread(() =>
-                {
-                    Wallfollower w = new Wallfollower(Maze);
-                    w.SolveMaze();
-                });
-                t.Start();
             }
         }
 
