@@ -6,7 +6,7 @@ using WpfMaze.Mazegame;
 
 namespace WpfMaze.MazeGame.Algorithms
 {
-    interface IAlgorithm
+    public interface IAlgorithm
     {
         public void SolveMaze();
 

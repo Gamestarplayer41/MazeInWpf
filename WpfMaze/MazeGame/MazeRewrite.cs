@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.DirectoryServices;
+using System.Printing;
+using System.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,123 +13,67 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using WpfMaze.MazeGame;
 
+
 namespace WpfMaze.Mazegame
 {
-    public class Maze
+    public class MazeRewrite
     {
-        public WriteableBitmap Bitmap;
-        public int Width => Board.GetLength(0);
+        private byte[,] Board;
 
+        private Player Player;
 
-        public int Height => Board.GetLength(1);
+        private Finish Finish;
 
-        public byte[,] Board { get; set; }
-
-        public Player Player { get; set; }
-
-        public Finish Finish { get; set; }
-
-        public bool IsSolved => Player == Finish;
-
-        public delegate void MazeEvent(Maze maze);
-
-        public event MazeEvent Rendered;
-
-        public event MazeEvent Rendering;
-
-        public event MazeEvent OnMazeSolved;
-
-        public delegate void playerPositionChange(Maze maze, Point player);
-
-        public event playerPositionChange onPlayerPositionChange;
-
-        public Maze(int width, int height, bool randomize = false)
+        public bool isSolved
         {
-            Board = new byte[width, height];
+            get => Player == Finish;
+        }
+
+        public int Width
+        {
+            get => Board.GetLength(0);
+        }
+
+        public int Height
+        {
+            get => Board.GetLength(1);
+        }
+
+        public WriteableBitmap Bitmap;
+
+        delegate void MazeEvent(MazeRewrite maze, object args);
+
+        private event MazeEvent onPlayerMove;
+
+        private event MazeEvent onSolved;
+
+        public MazeRewrite(int width, int height, bool randomize = true)
+        {
+            Board = new byte[height, width];
             Application.Current.Dispatcher.Invoke(() =>
             {
-                this.Bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgr32, null);
+                Bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgr32, null);
             });
             if (randomize)
-                this.randomize();
+                this.calculateMaze();
         }
 
-        private void changePlayerPosition(Point oldPlayerPosition)
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                this.Bitmap.Lock();
-                DrawPixel(oldPlayerPosition.X, oldPlayerPosition.Y, new int[3] {255, 0, 255}, this.Bitmap.BackBuffer,
-                    this.Bitmap.BackBufferStride);
-                DrawPixel(Player.X, Player.Y, new int[3] {255, 0, 0}, this.Bitmap.BackBuffer,
-                    this.Bitmap.BackBufferStride);
-                this.Bitmap.AddDirtyRect(new Int32Rect(0, 0, (int) Bitmap.Width, (int) Bitmap.Height));
-                this.Bitmap.Unlock();
-            });
-        }
-
-        public async void paintBitmaps(bool black = false)
-        {
-            Rendering?.Invoke(this);
-            (IntPtr, int, int, int) t = Bitmap.Dispatcher.Invoke(() =>
-            {
-                Bitmap.Lock();
-
-                (IntPtr, int, int, int) tupel = (Bitmap.BackBuffer, Bitmap.BackBufferStride, (int) Bitmap.Width,
-                    (int) Bitmap.Height);
-                return tupel;
-            });
-            await Task.Run(() =>
-            {
-                for (int x = 0; x < t.Item3 - 1; x++)
-                {
-                    for (int y = 0; y < t.Item4 - 1; y++)
-                    {
-                        if (x == Player.X && y == Player.Y)
-                        {
-                            DrawPixel(x, y, new int[3] {255, 0, 0}, t.Item1, t.Item2);
-                        }
-                        else if (x == Finish.X && y == Finish.Y)
-                        {
-                            DrawPixel(x, y, new int[3] {255, 215, 0}, t.Item1, t.Item2);
-                        }
-                        else if (Board[x, y] == 1)
-                        {
-                            DrawPixel(x, y, new int[3] {0, 0, 0}, t.Item1, t.Item2);
-                        }
-                        else
-                        {
-                            DrawPixel(x, y, (black) ? new int[3] {0, 0, 0} : new int[3] {255, 255, 255}, t.Item1,
-                                t.Item2);
-                        }
-                    }
-                }
-            });
-            Bitmap.Dispatcher.Invoke(() =>
-            {
-                Bitmap.AddDirtyRect(new Int32Rect(0, 0, (int) Bitmap.Width, (int) Bitmap.Height));
-                Bitmap.Unlock();
-            });
-
-            Rendered?.Invoke(this);
-        }
-
-        public void randomize()
+        private void calculateMaze()
         {
             // This algorithm is a randomized version of Prim's algorithm. (see https://en.wikipedia.org/wiki/Maze_generation_algorithm#Randomized_Prim%27s_algorithm)
             var random = new Random();
             int r = 0, c = 0;
 
             // Start with a grid full of walls.
-            for (r = 0; r < Width; r++)
-            for (c = 0; c < Height; c++)
+            for (r = 0; r < Height; r++)
+            for (c = 0; c < Width; c++)
                 Board[r, c] = 1;
 
             // Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list.
             var walls = new List<(int Row, int Col)>();
 
-            r = random.Next(1, Width - 2);
-            c = random.Next(1, Height - 2);
+            r = random.Next(1, Height - 2);
+            c = random.Next(1, Width - 2);
 
             Board[r, c] = 0;
 
@@ -258,69 +205,112 @@ namespace WpfMaze.Mazegame
             // position player spawn
             do
             {
-                r = random.Next(1, Width - 2);
-                c = random.Next(1, Height - 2);
+                r = random.Next(1, Height - 2);
+                c = random.Next(1, Width - 2);
             } while (Board[r, c] != 0 ||
                      Board[r, c + 1] + Board[r, c - 1] + Board[r + 1, c] + Board[r - 1, c] < 3);
 
-            Player = new Player(r, c);
-            Board[r, c] = 3;
-
+            Player = new Player(c, r);
             // position exit point
-            int deltaX, deltaY;
             do
             {
-                r = random.Next(1, Width - 2);
-                c = random.Next(1, Height - 2);
-                deltaX = Math.Abs(Player.X - r);
-                deltaY = Math.Abs(Player.Y - c);
-            } while ((Board[r, c] != 0 &&
-                      Board[r, c + 1] + Board[r, c - 1] + Board[r + 1, c] + Board[r - 1, c] < 3) &&
-                     (deltaX < 3 || deltaY < 3));
+                r = random.Next(1, Height - 2);
+                c = random.Next(1, Width - 2);
+            } while (Board[r, c] != 0 &&
+                     Board[r, c + 1] + Board[r, c - 1] + Board[r + 1, c] + Board[r - 1, c] < 3);
 
-
-            Finish = new Finish(r, c);
-            Board[r, c] = 4;
+            Finish = new Finish(c, r);
+            this.calculateBitmap();
         }
-
-        public bool MovePlayer(Direction direction)
-        {
-            if (this.PlayerCanMove(direction))
-            {
-                var (deltaX, deltaY) = direction.GetMovementDeltas();
-                Point oldPlayerPosition = new Point() {X = this.Player.X, Y = this.Player.Y};
-                this.Player.X += deltaX;
-                this.Player.Y += deltaY;
-                this.changePlayerPosition(oldPlayerPosition);
-                if (this.IsSolved)
-                    this.OnMazeSolved?.Invoke(this);
-                return true;
-            }
-
-            return false;
-        }
-
 
         private bool IsInBounds(int row, int col)
         {
             if (row <= 0)
                 return false;
-            if (row > Width - 1)
-                return false;
             if (col <= 0)
                 return false;
-            if (col > Height - 1)
+            if (col > Width - 2)
+                return false;
+            if (row > Height - 2)
                 return false;
             return true;
         }
 
-        public bool PlayerCanMove(Direction direction)
+        private async void calculateBitmap()
         {
-            if (IsSolved)
-                return false;
+            IntPtr backbuffer = new IntPtr();
+            int stride = 0;
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Bitmap.Lock();
+                backbuffer = Bitmap.BackBuffer;
+                stride = Bitmap.BackBufferStride;
+            });
+            await Task.Run(() =>
+            {
+                for (int y = 0; y < Width; y++)
+                {
+                    for (int x = 0; x < Height; x++)
+                    {
+                        if (Player.X == x && Player.Y == y)
+                        {
+                            DrawPixel(x, y, new int[3] {255, 215, 0}, backbuffer, stride);
+                        }
+                        else if (Finish.X == x && Finish.Y == y)
+                        {
+                            DrawPixel(x, y, new int[3] {255, 0, 0}, backbuffer, stride);
+                        }
+                        else if (Board[y, x] == 1)
+                        {
+                            DrawPixel(x, y, new int[3] {0, 0, 0}, backbuffer, stride);
+                        }
+                        else
+                        {
+                            DrawPixel(x, y, new int[3] {255, 255, 255}, backbuffer, stride);
+                        }
+                    }
+                }
+            });
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Bitmap.AddDirtyRect(new Int32Rect(0, 0, Width, Height));
+                Bitmap.Unlock();
+            });
+        }
 
+        private void RenderPlayerPosition(Player oldPlayerPosition)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                this.Bitmap.Lock();
+                DrawPixel(oldPlayerPosition.X, oldPlayerPosition.Y, new int[3] {255, 255, 255}, Bitmap.BackBuffer,
+                    Bitmap.BackBufferStride);
+                DrawPixel(Player.X,Player.Y,new int[3]{255,215,0},Bitmap.BackBuffer,Bitmap.BackBufferStride);
+                Bitmap.AddDirtyRect(new Int32Rect(0,0,Width,Height));
+                Bitmap.Unlock();
+            });
+        }
+
+        public bool MovePlayer(Direction direction)
+        {
+            if (!PlayerCanMove(direction))
+                return false;
             var (deltaX, deltaY) = direction.GetMovementDeltas();
-            return Board[Player.X + deltaX, Player.Y + deltaY] != 1;
+            Player oldPlayerPosition = new Player(Player.X, Player.Y);
+            Player.X += deltaX;
+            Player.Y += deltaY;
+            this.RenderPlayerPosition(oldPlayerPosition);
+            if(isSolved)
+                onSolved?.Invoke(this,null);
+            return true;
+        }
+
+        private bool PlayerCanMove(Direction direction)
+        {
+            if (isSolved)
+                return false;
+            var (deltaX, deltaY) = direction.GetMovementDeltas();
+            return Board[Player.Y + deltaY, Player.X + deltaX] == 0;
         }
 
         private static void DrawPixel(int x, int y, int[] Color, IntPtr backBuffer, int stride)

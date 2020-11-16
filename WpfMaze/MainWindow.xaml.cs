@@ -17,11 +17,11 @@ namespace WpfMaze
     public partial class MainWindow : Window
     {
         private Maze Maze;
+        private MazeRewrite MazeRewrite;
         private System.Windows.Point? MousePos;
         public int GameHeight = 10;
         public int GameWidth = 10;
-        public AlgorithmManager AlgorithmManager = new AlgorithmManager();
-        
+
         public MainWindow()
         {
             InitializeComponent();
@@ -33,41 +33,19 @@ namespace WpfMaze
             this.CreateNewGame.Click += this.onCreateNewGame;
             this.SizeChanged += (sender, e) => zoomToSize();
             this.StackPanel.MouseRightButtonDown += (sender, e) => { this.Maze.paintBitmaps(); };
-            this.KeyUp += this.movePlayer;
+            this.KeyDown += this.movePlayer;
             this.GameHeightInput.Text = Convert.ToString(this.GameHeight);
             this.GameWidthInput.Text = Convert.ToString(this.GameWidth);
             this.onCreateNewGame(null, null);
-
-            foreach (var algorithm in AlgorithmManager.Alorithms)
-            {
-                Button b = new Button();
-                b.Content = algorithm;
-                b.Click += (sender, e) =>
-                {
-                    AlgorithmManager.injectMaze(algorithm,this.Maze);
-                    AlgorithmManager.assignThread(algorithm);
-                    AlgorithmManager.startThread(algorithm);
-                };
-                b.Margin = new Thickness(){Top = 20,Left = 20,Right = 20,Bottom = 20};
-                this.SolvingButtons.Children.Add(b);
-            }
-            
-            Button stopAllThreads = new Button();
-            stopAllThreads.Content = "STOP";
-            stopAllThreads.Click += (sender, e) =>
-            {
-                AlgorithmManager
-            };
         }
 
         private void onCreateNewGame(object sender, EventArgs e)
         {
             this.GameWidth = Convert.ToInt32(this.GameWidthInput.Text);
             this.GameHeight = Convert.ToInt32(this.GameHeightInput.Text);
-            this.Maze = new Maze(GameWidth, GameHeight, true);
-            Maze.paintBitmaps();
-            this.injectMaze(this.Maze);
-            Maze.OnMazeSolved += (maze) => MessageBox.Show("Labyrinth Gelöst", "Erfolg", MessageBoxButton.OK);
+            this.MazeRewrite = new MazeRewrite(GameWidth, GameHeight);
+            Bitmap.Source = this.MazeRewrite.Bitmap;
+            // this.injectMaze(this.MazeRewrite);
         }
 
         private void zoomToSize()
@@ -85,19 +63,19 @@ namespace WpfMaze
         {
             if (e.Key == Key.W)
             {
-                this.Maze.MovePlayer(Direction.Up);
+                this.MazeRewrite.MovePlayer(Direction.Up);
             }
             else if (e.Key == Key.D)
             {
-                this.Maze.MovePlayer(Direction.Right);
+                this.MazeRewrite.MovePlayer(Direction.Right);
             }
             else if (e.Key == Key.S)
             {
-                this.Maze.MovePlayer(Direction.Down);
+                this.MazeRewrite.MovePlayer(Direction.Down);
             }
             else if (e.Key == Key.A)
             {
-                this.Maze.MovePlayer(Direction.Left);
+                this.MazeRewrite.MovePlayer(Direction.Left);
             }
         }
 

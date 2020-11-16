@@ -25,7 +25,7 @@
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net5.0-windows7.0": {
+          "net5.0": {
             "targetAlias": "net5.0-windows",
             "projectReferences": {}
           }
@@ -37,7 +37,7 @@
         }
       },
       "frameworks": {
-        "net5.0-windows7.0": {
+        "net5.0": {
           "targetAlias": "net5.0-windows",
           "imports": [
             "net461",
