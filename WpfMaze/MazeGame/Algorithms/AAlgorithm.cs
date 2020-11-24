@@ -7,7 +7,7 @@ namespace WpfMaze.MazeGame.Algorithms
 {
     abstract class AAlgorithm
     {
-        public Maze Maze;
+        public MazeRewrite Maze;
 
         public bool stopThread = false;
     }

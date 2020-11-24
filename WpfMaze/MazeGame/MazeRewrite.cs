@@ -18,11 +18,11 @@ namespace WpfMaze.Mazegame
 {
     public class MazeRewrite
     {
-        private byte[,] Board;
+        public byte[,] Board;
 
-        private Player Player;
+        public Player Player;
 
-        private Finish Finish;
+        public Finish Finish;
 
         public bool isSolved
         {
@@ -31,21 +31,21 @@ namespace WpfMaze.Mazegame
 
         public int Width
         {
-            get => Board.GetLength(0);
+            get => Board.GetLength(1);
         }
 
         public int Height
         {
-            get => Board.GetLength(1);
+            get => Board.GetLength(0);
         }
 
         public WriteableBitmap Bitmap;
 
-        delegate void MazeEvent(MazeRewrite maze, object args);
+        public delegate void MazeEvent(MazeRewrite maze, object args);
 
-        private event MazeEvent onPlayerMove;
+        public event MazeEvent onPlayerMove;
 
-        private event MazeEvent onSolved;
+        public event MazeEvent onSolved;
 
         public MazeRewrite(int width, int height, bool randomize = true)
         {
@@ -207,23 +207,25 @@ namespace WpfMaze.Mazegame
             {
                 r = random.Next(1, Height - 2);
                 c = random.Next(1, Width - 2);
-            } while (Board[r, c] != 0 ||
-                     Board[r, c + 1] + Board[r, c - 1] + Board[r + 1, c] + Board[r - 1, c] < 3);
+            } while (Board[r, c] != 0);
 
             Player = new Player(c, r);
+            int deltaX, deltaY,delta;
             // position exit point
             do
             {
                 r = random.Next(1, Height - 2);
                 c = random.Next(1, Width - 2);
-            } while (Board[r, c] != 0 &&
-                     Board[r, c + 1] + Board[r, c - 1] + Board[r + 1, c] + Board[r - 1, c] < 3);
+                deltaX = Player.X - c;
+                deltaY = Player.Y - r;
+                delta = (int) (Math.Pow(deltaX,2) + Math.Pow(deltaY,2));
+            } while (Board[r, c] != 0 );
 
             Finish = new Finish(c, r);
             this.calculateBitmap();
         }
 
-        private bool IsInBounds(int row, int col)
+        public bool IsInBounds(int row, int col)
         {
             if (row <= 0)
                 return false;
@@ -248,17 +250,17 @@ namespace WpfMaze.Mazegame
             });
             await Task.Run(() =>
             {
-                for (int y = 0; y < Width; y++)
+                for (int y = 0; y < Height; y++)
                 {
-                    for (int x = 0; x < Height; x++)
+                    for (int x = 0; x < Width; x++)
                     {
                         if (Player.X == x && Player.Y == y)
                         {
-                            DrawPixel(x, y, new int[3] {255, 215, 0}, backbuffer, stride);
+                            DrawPixel(x, y, Player.Color, backbuffer, stride);
                         }
                         else if (Finish.X == x && Finish.Y == y)
                         {
-                            DrawPixel(x, y, new int[3] {255, 0, 0}, backbuffer, stride);
+                            DrawPixel(x, y, Finish.Color, backbuffer, stride);
                         }
                         else if (Board[y, x] == 1)
                         {
@@ -283,10 +285,10 @@ namespace WpfMaze.Mazegame
             Application.Current.Dispatcher.Invoke(() =>
             {
                 this.Bitmap.Lock();
-                DrawPixel(oldPlayerPosition.X, oldPlayerPosition.Y, new int[3] {255, 255, 255}, Bitmap.BackBuffer,
+                DrawPixel(oldPlayerPosition.X, oldPlayerPosition.Y, new int[3] {237, 175, 166}, Bitmap.BackBuffer,
                     Bitmap.BackBufferStride);
-                DrawPixel(Player.X,Player.Y,new int[3]{255,215,0},Bitmap.BackBuffer,Bitmap.BackBufferStride);
-                Bitmap.AddDirtyRect(new Int32Rect(0,0,Width,Height));
+                DrawPixel(Player.X, Player.Y, Player.Color, Bitmap.BackBuffer, Bitmap.BackBufferStride);
+                Bitmap.AddDirtyRect(new Int32Rect(0, 0, Width, Height));
                 Bitmap.Unlock();
             });
         }
@@ -300,12 +302,12 @@ namespace WpfMaze.Mazegame
             Player.X += deltaX;
             Player.Y += deltaY;
             this.RenderPlayerPosition(oldPlayerPosition);
-            if(isSolved)
-                onSolved?.Invoke(this,null);
+            if (isSolved)
+                onSolved?.Invoke(this, null);
             return true;
         }
 
-        private bool PlayerCanMove(Direction direction)
+        public bool PlayerCanMove(Direction direction)
         {
             if (isSolved)
                 return false;
@@ -319,8 +321,6 @@ namespace WpfMaze.Mazegame
             var row = y;
             unsafe
             {
-                // Get a pointer to the back buffer.
-
                 // Find the address of the pixel to draw.
                 backBuffer += row * stride;
                 backBuffer += column * 4;
@@ -333,10 +333,6 @@ namespace WpfMaze.Mazegame
                 // Assign the color data to the pixel.
                 *(int*) backBuffer = color_data;
             }
-
-            // Specify the area of the bitmap that changed.
-            //Application.Current.Dispatcher.Invoke(() =>
-            //Bitmap.AddDirtyRect(new Int32Rect(column, row, 1, 1)));
         }
     }
 }

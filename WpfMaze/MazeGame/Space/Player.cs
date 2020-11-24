@@ -8,7 +8,7 @@ namespace WpfMaze.Mazegame
 {
     public class Player : Point
     {
-
+        public int[] Color = {11, 14, 56};
         public Player(int X, int Y)
         {
             this.X = X;

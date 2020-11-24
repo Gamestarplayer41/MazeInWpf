@@ -10,7 +10,7 @@ namespace WpfMaze.MazeGame.Algorithms
     {
         public void SolveMaze();
 
-        public void injectMaze(Maze maze);
+        public void injectMaze(MazeRewrite maze);
 
         public bool stopThread
         {

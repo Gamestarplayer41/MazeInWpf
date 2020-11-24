@@ -36,6 +36,13 @@ namespace WpfMaze
             this.KeyDown += this.movePlayer;
             this.GameHeightInput.Text = Convert.ToString(this.GameHeight);
             this.GameWidthInput.Text = Convert.ToString(this.GameWidth);
+            this.WallfollowerAlgorithm.Click += (sender, e) =>
+            {
+                Recursive rec = new Recursive();
+                AlgorithmThread t = new AlgorithmThread(rec);
+                t.injectMaze(this.MazeRewrite);
+                t.startThread();
+            };
             this.onCreateNewGame(null, null);
         }
 
@@ -45,7 +52,10 @@ namespace WpfMaze
             this.GameHeight = Convert.ToInt32(this.GameHeightInput.Text);
             this.MazeRewrite = new MazeRewrite(GameWidth, GameHeight);
             Bitmap.Source = this.MazeRewrite.Bitmap;
-            // this.injectMaze(this.MazeRewrite);
+            this.MazeRewrite.onSolved += (maze, objects) =>
+            {
+                MessageBox.Show("Labyrinth Gelöst!", "Erfolg", MessageBoxButton.OK);
+            };
         }
 
         private void zoomToSize()
@@ -61,21 +71,20 @@ namespace WpfMaze
 
         private void movePlayer(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.W)
+            switch (e.Key)
             {
-                this.MazeRewrite.MovePlayer(Direction.Up);
-            }
-            else if (e.Key == Key.D)
-            {
-                this.MazeRewrite.MovePlayer(Direction.Right);
-            }
-            else if (e.Key == Key.S)
-            {
-                this.MazeRewrite.MovePlayer(Direction.Down);
-            }
-            else if (e.Key == Key.A)
-            {
-                this.MazeRewrite.MovePlayer(Direction.Left);
+                case Key.W:
+                    this.MazeRewrite.MovePlayer(Direction.Up);
+                    break;
+                case Key.D:
+                    this.MazeRewrite.MovePlayer(Direction.Right);
+                    break;
+                case Key.S:
+                    this.MazeRewrite.MovePlayer(Direction.Down);
+                    break;
+                case Key.A:
+                    this.MazeRewrite.MovePlayer(Direction.Left);
+                    break;
             }
         }
 

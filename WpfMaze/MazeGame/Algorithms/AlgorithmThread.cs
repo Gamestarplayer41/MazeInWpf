@@ -24,7 +24,7 @@ namespace WpfMaze.MazeGame.Algorithms
             Algorithm.stopThread = true;
         }
 
-        public void injectMaze(Maze maze)
+        public void injectMaze(MazeRewrite maze)
         {
             Algorithm.injectMaze(maze);
         }

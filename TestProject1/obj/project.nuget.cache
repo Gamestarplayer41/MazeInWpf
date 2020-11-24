@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "dgSpecHash": "M47v6zQrmLkpryI1Fx+eOZI3tHPeUNm7wrsBJ/rLl2U661FI+qgV4RekYlDI7i1/loQM3AUR8WpFJ00cREAc5Q==",
+  "success": false,
+  "projectFilePath": "C:\\Users\\games\\Desktop\\WpfMaze\\TestProject1\\TestProject1.csproj",
+  "expectedPackageFiles": [],
+  "logs": [
+    {
+      "code": "NU1201",
+      "level": "Error",
+      "message": "Project WpfMaze is not compatible with net5.0 (.NETCoreApp,Version=v5.0). Project WpfMaze supports: net5.0-windows7.0 (.NETCoreApp,Version=v5.0)",
+      "libraryId": "WpfMaze",
+      "targetGraphs": [
+        "net5.0"
+      ]
+    }
+  ]
+}

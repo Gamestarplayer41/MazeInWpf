@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfMaze"
         mc:Ignorable="d"
-        Title="MazeGame V1" Height="450" Width="800" MinWidth="400" MinHeight="200">
+        Title="MazeGame V1" Height="450" Width="800" MinWidth="500" MinHeight="250">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -20,7 +20,7 @@
                     <Canvas.RenderTransform>
                         <MatrixTransform x:Name="MatrixTransform" />
                     </Canvas.RenderTransform>
-                    <Image x:Name="Bitmap" Stretch="None"></Image>
+                    <Image x:Name="Bitmap" Stretch="UniformToFill"></Image>
                 </Canvas>
             </StackPanel>
         </Border>
@@ -32,7 +32,8 @@
             <TextBox x:Name="GameWidthInput" Margin="10 0 10 0"></TextBox>
             <TextBlock Margin="10 10 10 0">Height:</TextBlock>
             <TextBox x:Name="GameHeightInput" Margin="10 0 10 0"></TextBox>
-            <StackPanel x:Name="SolvingButtons">
+            <StackPanel x:Name="SolvingButtons" Margin="10 10 10 0">
+                <Button x:Name="WallfollowerAlgorithm">Wallfollower</Button>
             </StackPanel>
         </StackPanel>
     </Grid>

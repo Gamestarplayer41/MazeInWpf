@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -10,6 +11,8 @@ namespace WpfMaze.Mazegame
 {
     public class Point
     {
+
+        public int[] Color;
         public int X
         {
             get; set;

@@ -8,7 +8,7 @@ namespace WpfMaze.MazeGame.Algorithms
 {
     class Wallfollower : AAlgorithm, IAlgorithm
     {
-        public Maze maze;
+        public MazeRewrite maze;
         public bool stopThread { get; set; } = false;
         private int dir = 1;
         private Direction Heading = Direction.Down;
@@ -19,7 +19,7 @@ namespace WpfMaze.MazeGame.Algorithms
             this.FollowWall();
         }
 
-        public void injectMaze(Maze maze)
+        public void injectMaze(MazeRewrite maze)
         {
             this.Maze = maze;
         }
@@ -27,7 +27,7 @@ namespace WpfMaze.MazeGame.Algorithms
 
         private void FollowWall()
         {
-            while (!this.Maze.IsSolved && !stopThread)
+            while (!this.Maze.isSolved && !stopThread)
             {
                 if (this.Maze.PlayerCanMove(DirectionResolver(IntDirCalc(dir, -1))))
                 {
