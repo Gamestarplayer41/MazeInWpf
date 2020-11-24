@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using WpfMaze.Mazegame;
@@ -8,22 +9,60 @@ namespace WpfMaze.MazeGame.Algorithms
 {
     class Wallfollower : AAlgorithm, IAlgorithm
     {
-        public MazeRewrite maze;
         public bool stopThread { get; set; } = false;
         private int dir = 1;
         private Direction Heading = Direction.Down;
 
+        private int X, Y;
+
+        private Path Path = new Path();
+
 
         public void SolveMaze()
         {
-            this.FollowWall();
+            this.followWallNew();
         }
 
         public void injectMaze(MazeRewrite maze)
         {
             this.Maze = maze;
+            X = maze.Player.X;
+            Y = maze.Player.Y;
         }
 
+        private void followWallNew()
+        {
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+            bool found = false;
+            while (!found)
+            {
+                Direction direction;
+                for (int i = -1; i < 3; i++)
+                {
+                    direction = DirectionResolver(IntDirCalc(dir, i));
+                    if (isWall(direction))
+                        continue;
+                    dir = IntDirCalc(dir, i);
+                    Heading = direction;
+                    Path.addElement(direction);
+                    (int deltaX, int deltaY) = direction.GetMovementDeltas();
+                    X += deltaX;
+                    Y += deltaY;
+                    if (X == Maze.Finish.X && Y == Maze.Finish.Y)
+                        found = true;
+                    break;
+                }
+            }
+            watch.Stop();
+            Console.WriteLine(watch.ElapsedMilliseconds + "ms " + Path.Directions.Count + " elements");
+        }
+
+        private bool isWall(Direction direction)
+        {
+            (int deltaX, int deltaY) = direction.GetMovementDeltas();
+            return Maze.Board[Y + deltaY, X + deltaX] == 1;
+        }
 
         private void FollowWall()
         {

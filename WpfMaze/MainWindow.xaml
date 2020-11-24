@@ -34,6 +34,7 @@
             <TextBox x:Name="GameHeightInput" Margin="10 0 10 0"></TextBox>
             <StackPanel x:Name="SolvingButtons" Margin="10 10 10 0">
                 <Button x:Name="WallfollowerAlgorithm">Wallfollower</Button>
+                <Button x:Name="RecursiveAlogrithm">Recursive</Button>
             </StackPanel>
         </StackPanel>
     </Grid>

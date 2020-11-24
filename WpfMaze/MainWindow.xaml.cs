@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,8 +23,46 @@ namespace WpfMaze
         public int GameHeight = 10;
         public int GameWidth = 10;
 
+        private static class ConsoleAllocator
+        {
+            [DllImport(@"kernel32.dll", SetLastError = true)]
+            static extern bool AllocConsole();
+
+            [DllImport(@"kernel32.dll")]
+            static extern IntPtr GetConsoleWindow();
+
+            [DllImport(@"user32.dll")]
+            static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+            const int SwHide = 0;
+            const int SwShow = 5;
+
+
+            public static void ShowConsoleWindow()
+            {
+                var handle = GetConsoleWindow();
+
+                if (handle == IntPtr.Zero)
+                {
+                    AllocConsole();
+                }
+                else
+                {
+                    ShowWindow(handle, SwShow);
+                }
+            }
+
+            public static void HideConsoleWindow()
+            {
+                var handle = GetConsoleWindow();
+                ShowWindow(handle, SwHide);
+            }
+        }
+
+
         public MainWindow()
         {
+            ConsoleAllocator.ShowConsoleWindow();
             InitializeComponent();
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
             this.StackPanelBorder.MouseLeftButtonDown += this.onBitmapLeftMouseDown;
@@ -38,8 +77,15 @@ namespace WpfMaze
             this.GameWidthInput.Text = Convert.ToString(this.GameWidth);
             this.WallfollowerAlgorithm.Click += (sender, e) =>
             {
-                Recursive rec = new Recursive();
-                AlgorithmThread t = new AlgorithmThread(rec);
+                IAlgorithm algo = new Wallfollower();
+                AlgorithmThread t = new AlgorithmThread(algo);
+                t.injectMaze(this.MazeRewrite);
+                t.startThread();
+            };
+            this.RecursiveAlogrithm.Click += (sender, e) =>
+            {
+                IAlgorithm algo = new Recursive();
+                AlgorithmThread t = new AlgorithmThread(algo);
                 t.injectMaze(this.MazeRewrite);
                 t.startThread();
             };
@@ -95,7 +141,7 @@ namespace WpfMaze
 
         private void onBitapMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            var pos = e.GetPosition((UIElement) sender);
+            var pos = e.GetPosition((UIElement)sender);
             var matrix = MatrixTransform.Matrix;
             var scale = e.Delta > 0 ? 1.1 : 1 / 1.1;
             matrix.ScaleAt(scale, scale, pos.X, pos.Y);
@@ -104,7 +150,7 @@ namespace WpfMaze
 
         private void onBitmapLeftMouseDown(object sender, MouseButtonEventArgs e)
         {
-            var viewport = (UIElement) sender;
+            var viewport = (UIElement)sender;
             viewport.CaptureMouse();
             MousePos = e.GetPosition(viewport);
         }
@@ -113,7 +159,7 @@ namespace WpfMaze
         {
             if (MousePos.HasValue)
             {
-                var pos = e.GetPosition((UIElement) sender);
+                var pos = e.GetPosition((UIElement)sender);
                 var matrix = MatrixTransform.Matrix;
                 matrix.Translate(pos.X - MousePos.Value.X, pos.Y - MousePos.Value.Y);
                 MatrixTransform.Matrix = matrix;
@@ -123,7 +169,7 @@ namespace WpfMaze
 
         private void onBitmapLeftMouseUp(object sender, MouseButtonEventArgs e)
         {
-            ((UIElement) sender).ReleaseMouseCapture();
+            ((UIElement)sender).ReleaseMouseCapture();
             MousePos = null;
         }
 

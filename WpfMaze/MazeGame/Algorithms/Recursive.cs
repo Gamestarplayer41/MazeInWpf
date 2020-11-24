@@ -45,7 +45,7 @@ namespace WpfMaze.MazeGame.Algorithms
                     found = true;
             }
             watch.Stop();
-            Console.WriteLine(watch.ElapsedMilliseconds);
+            Console.WriteLine(watch.ElapsedMilliseconds + "ms " + Path.Directions.Count + " elements");
         }
 
         private List<Direction> getDirectionsNotVisited(List<Direction> directions)
@@ -86,7 +86,7 @@ namespace WpfMaze.MazeGame.Algorithms
             {
                 for (int x = 0; x < Visited.GetLength(0); x++)
                 {
-                    Console.Write(Visited[y,x]);
+                    Console.Write(Visited[y, x]);
                 }
 
                 Console.Write("\n");
