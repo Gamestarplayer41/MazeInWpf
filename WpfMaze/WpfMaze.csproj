@@ -10,6 +10,7 @@
 		<Version>1</Version>
 		<Description>WpfMaze with MT support</Description>
 		<DelaySign>false</DelaySign>
+		<LangVersion>9</LangVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

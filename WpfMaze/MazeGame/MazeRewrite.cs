@@ -206,7 +206,7 @@ namespace WpfMaze.Mazegame
             CalculateBitmap();
         }
 
-        public bool IsInBounds(int row, int col)
+        private bool IsInBounds(int row, int col)
         {
             if (row <= 0)
                 return false;

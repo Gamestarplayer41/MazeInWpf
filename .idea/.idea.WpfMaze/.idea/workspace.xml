@@ -28,29 +28,8 @@
   </component>
   <component name="IdeDocumentHistory">
     <changedPaths>
-      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Algorithms/AlgorithmManager.cs" />
-      <option value="$PROJECT_DIR$/TestProject1/UnitTest1.cs" />
-      <option value="$PROJECT_DIR$/TestProject2/UnitTest1.cs" />
-      <option value="$PROJECT_DIR$/WpfMaze/Utils/ConsoleAllocator.cs" />
-      <option value="$PROJECT_DIR$/WpfMaze/MainWindow.xaml" />
-      <option value="$PROJECT_DIR$/WpfMaze/App.xaml" />
-      <option value="$PROJECT_DIR$/WpfMaze/App.xaml.cs" />
-      <option value="$PROJECT_DIR$/WpfMaze/MainWindow.xaml.cs" />
       <option value="$PROJECT_DIR$/WpfMaze/MazeGame/MazeRewrite.cs" />
-      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Maze.cs" />
-      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Space/Player.cs" />
-      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Space/Finish.cs" />
-      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Space/DirectionExtension.cs" />
-      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Space/Direction.cs" />
-      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Painting/Color.cs" />
-      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Algorithms/Recursive.cs" />
-      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Algorithms/AlgorithmThread.cs" />
-      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Algorithms/Wallfollower.cs" />
-      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Algorithms/Path.cs" />
-      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Algorithms/IAlgorithm.cs" />
-      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Painting/BitmapPart.cs" />
       <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Algorithms/AAlgorithm.cs" />
-      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Space/Point.cs" />
     </changedPaths>
   </component>
   <component name="ProjectId" id="1jvoGEt0sIlEsJ6D0dJvRcgwUhe" />
@@ -73,29 +52,11 @@
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
-  <component name="RunManager" selected=".NET Project.WpfMaze">
-    <configuration name="TestProject1" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="" />
-      <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="PASS_PARENT_ENVS" value="1" />
-      <option name="USE_EXTERNAL_CONSOLE" value="0" />
-      <option name="USE_MONO" value="0" />
-      <option name="RUNTIME_ARGUMENTS" value="" />
-      <option name="PROJECT_PATH" value="$PROJECT_DIR$/TestProject1/TestProject1.csproj" />
-      <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
-      <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
-      <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
-      <option name="PROJECT_KIND" value="DotNetCore" />
-      <option name="PROJECT_TFM" value="" />
-      <method v="2">
-        <option name="Build" />
-      </method>
-    </configuration>
+  <component name="RunManager">
     <configuration name="WpfMaze" type="DotNetProject" factoryName=".NET Project">
-      <option name="EXE_PATH" value="" />
+      <option name="EXE_PATH" value="$PROJECT_DIR$/WpfMaze/bin/Release/netcoreapp3.1/WpfMaze.dll" />
       <option name="PROGRAM_PARAMETERS" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/WpfMaze/bin/Release/netcoreapp3.1" />
       <option name="PASS_PARENT_ENVS" value="1" />
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <option name="USE_MONO" value="0" />
@@ -105,7 +66,7 @@
       <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
       <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
       <option name="PROJECT_KIND" value="DotNetCore" />
-      <option name="PROJECT_TFM" value="" />
+      <option name="PROJECT_TFM" value=".NETCoreApp,Version=v3.1" />
       <method v="2">
         <option name="Build" />
       </method>
@@ -157,7 +118,8 @@
       <workItem from="1606255828863" duration="1982000" />
       <workItem from="1606258131896" duration="516000" />
       <workItem from="1606303399891" duration="4543000" />
-      <workItem from="1606315236486" duration="3190000" />
+      <workItem from="1606315236486" duration="3957000" />
+      <workItem from="1606319220070" duration="2264000" />
     </task>
     <servers />
   </component>
