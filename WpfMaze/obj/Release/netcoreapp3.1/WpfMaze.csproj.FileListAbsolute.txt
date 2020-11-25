@@ -8,7 +8,6 @@ C:\Users\games\Desktop\WpfMaze\WpfMaze\obj\Release\netcoreapp3.1\WpfMaze.csprojA
 C:\Users\games\Desktop\WpfMaze\WpfMaze\obj\Release\netcoreapp3.1\MainWindow.g.cs
 C:\Users\games\Desktop\WpfMaze\WpfMaze\obj\Release\netcoreapp3.1\App.g.cs
 C:\Users\games\Desktop\WpfMaze\WpfMaze\obj\Release\netcoreapp3.1\WpfMaze_MarkupCompile.cache
-C:\Users\games\Desktop\WpfMaze\WpfMaze\obj\Release\netcoreapp3.1\WpfMaze_MarkupCompile.lref
 C:\Users\games\Desktop\WpfMaze\WpfMaze\obj\Release\netcoreapp3.1\MainWindow.baml
 C:\Users\games\Desktop\WpfMaze\WpfMaze\obj\Release\netcoreapp3.1\WpfMaze.g.resources
 C:\Users\games\Desktop\WpfMaze\WpfMaze\obj\Release\netcoreapp3.1\WpfMaze.AssemblyInfoInputs.cache

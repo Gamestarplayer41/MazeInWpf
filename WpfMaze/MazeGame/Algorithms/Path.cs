@@ -7,17 +7,17 @@ namespace WpfMaze.MazeGame.Algorithms
     {
         public List<Direction> Directions = new List<Direction>();
 
-        public void removeFirstElement()
+        public void RemoveFirstElement()
         {
             Directions.RemoveAt(0);
         }
 
-        public void addElement(Direction direction)
+        public void AddElement(Direction direction)
         {
             Directions.Add(direction);
         }
 
-        public Direction removeLastElement()
+        public Direction RemoveLastElement()
         {
             Direction direction = Directions[Directions.Count - 1];
             Directions.RemoveAt(Directions.Count - 1);

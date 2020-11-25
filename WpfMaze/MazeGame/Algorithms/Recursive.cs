@@ -18,7 +18,7 @@ namespace WpfMaze.MazeGame.Algorithms
         private MazeRewrite Maze;
         private byte[,] Visited;
         private int X, Y;
-        public bool stopThread { get; set; }
+        public bool StopThread { get; set; }
 
         public void SolveMaze()
         {
@@ -34,7 +34,7 @@ namespace WpfMaze.MazeGame.Algorithms
                 GetDirectionsNotVisited();
                 if (CleanedDirections.Count == 0)
                 {
-                    Direction oldDir = Path.removeLastElement();
+                    Direction oldDir = Path.RemoveLastElement();
                     var (deltaXOld, deltaYOld) = oldDir.GetMovementDeltas();
                     X -= deltaXOld;
                     Y -= deltaYOld;
@@ -43,7 +43,7 @@ namespace WpfMaze.MazeGame.Algorithms
 
                 Direction dir = CleanedDirections[Random.Next(CleanedDirections.Count)];
                 var (deltaX, deltaY) = dir.GetMovementDeltas();
-                Path.addElement(dir);
+                Path.AddElement(dir);
                 X += deltaX;
                 Y += deltaY;
                 Visited[Y, X] = 1;

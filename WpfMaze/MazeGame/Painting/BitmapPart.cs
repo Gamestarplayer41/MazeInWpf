@@ -10,9 +10,7 @@ namespace WpfMaze.MazeGame.Painting
     {
         public WriteableBitmap Bitmap;
         public Point Start;
-
-        public int Written = 0;
-
+        
 
         public BitmapPart(int width, int height, int x, int y)
         {

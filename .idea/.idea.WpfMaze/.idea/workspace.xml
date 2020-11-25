@@ -31,11 +31,6 @@
       <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Algorithms/AlgorithmManager.cs" />
       <option value="$PROJECT_DIR$/TestProject1/UnitTest1.cs" />
       <option value="$PROJECT_DIR$/TestProject2/UnitTest1.cs" />
-      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Algorithms/IAlgorithm.cs" />
-      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Algorithms/AAlgorithm.cs" />
-      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Algorithms/AlgorithmThread.cs" />
-      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Algorithms/Path.cs" />
-      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Algorithms/Recursive.cs" />
       <option value="$PROJECT_DIR$/WpfMaze/Utils/ConsoleAllocator.cs" />
       <option value="$PROJECT_DIR$/WpfMaze/MainWindow.xaml" />
       <option value="$PROJECT_DIR$/WpfMaze/App.xaml" />
@@ -43,14 +38,19 @@
       <option value="$PROJECT_DIR$/WpfMaze/MainWindow.xaml.cs" />
       <option value="$PROJECT_DIR$/WpfMaze/MazeGame/MazeRewrite.cs" />
       <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Maze.cs" />
-      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Space/Point.cs" />
       <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Space/Player.cs" />
       <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Space/Finish.cs" />
       <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Space/DirectionExtension.cs" />
       <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Space/Direction.cs" />
       <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Painting/Color.cs" />
-      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Painting/BitmapPart.cs" />
+      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Algorithms/Recursive.cs" />
+      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Algorithms/AlgorithmThread.cs" />
       <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Algorithms/Wallfollower.cs" />
+      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Algorithms/Path.cs" />
+      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Algorithms/IAlgorithm.cs" />
+      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Painting/BitmapPart.cs" />
+      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Algorithms/AAlgorithm.cs" />
+      <option value="$PROJECT_DIR$/WpfMaze/MazeGame/Space/Point.cs" />
     </changedPaths>
   </component>
   <component name="ProjectId" id="1jvoGEt0sIlEsJ6D0dJvRcgwUhe" />
@@ -157,7 +157,7 @@
       <workItem from="1606255828863" duration="1982000" />
       <workItem from="1606258131896" duration="516000" />
       <workItem from="1606303399891" duration="4543000" />
-      <workItem from="1606315236486" duration="2775000" />
+      <workItem from="1606315236486" duration="3190000" />
     </task>
     <servers />
   </component>

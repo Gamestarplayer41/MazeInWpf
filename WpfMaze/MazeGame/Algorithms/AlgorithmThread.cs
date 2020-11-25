@@ -14,17 +14,17 @@ namespace WpfMaze.MazeGame.Algorithms
             Thread = new Thread(Algorithm.SolveMaze);
         }
 
-        public void startThread()
+        public void StartThread()
         {
             Thread.Start();
         }
 
-        public void stopThread()
+        public void StopThread()
         {
-            Algorithm.stopThread = true;
+            Algorithm.StopThread = true;
         }
 
-        public void injectMaze(MazeRewrite maze)
+        public void InjectMaze(MazeRewrite maze)
         {
             Algorithm.InjectMaze(maze);
         }

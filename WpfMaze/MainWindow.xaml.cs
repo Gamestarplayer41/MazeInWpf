@@ -50,15 +50,15 @@ namespace WpfMaze
             {
                 IAlgorithm algo = new Wallfollower();
                 var t = new AlgorithmThread(algo);
-                t.injectMaze(MazeRewrite);
-                t.startThread();
+                t.InjectMaze(MazeRewrite);
+                t.StartThread();
             };
             RecursiveAlogrithm.Click += (sender, e) =>
             {
                 IAlgorithm algo = new Recursive();
                 var t = new AlgorithmThread(algo);
-                t.injectMaze(MazeRewrite);
-                t.startThread();
+                t.InjectMaze(MazeRewrite);
+                t.StartThread();
             };
         }
 

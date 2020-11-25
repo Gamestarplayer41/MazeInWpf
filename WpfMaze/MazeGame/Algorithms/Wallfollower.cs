@@ -11,7 +11,7 @@ namespace WpfMaze.MazeGame.Algorithms
         private int Dir = 1;
 
         private int X, Y;
-        public new bool stopThread { get; set; } = false;
+        public bool StopThread { get; set; } = false;
 
 
         public void SolveMaze()
@@ -40,7 +40,7 @@ namespace WpfMaze.MazeGame.Algorithms
                     if (IsWall(direction))
                         continue;
                     Dir = IntDirCalc(Dir, i);
-                    Path.addElement(direction);
+                    Path.AddElement(direction);
                     var (deltaX, deltaY) = direction.GetMovementDeltas();
                     X += deltaX;
                     Y += deltaY;

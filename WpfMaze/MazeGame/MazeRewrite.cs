@@ -200,7 +200,7 @@ namespace WpfMaze.Mazegame
                 deltaX = Player.X - c;
                 deltaY = Player.Y - r;
                 delta = (int) (Math.Pow(deltaX, 2) + Math.Pow(deltaY, 2));
-            } while (Board[r, c] != 0 && delta < 3);
+            } while (Board[r, c] != 0 || delta < 3);
 
             Finish = new Finish(c, r);
             CalculateBitmap();

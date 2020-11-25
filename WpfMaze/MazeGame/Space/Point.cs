@@ -1,4 +1,6 @@
-﻿namespace WpfMaze.MazeGame.Space
+﻿using System.Diagnostics;
+
+namespace WpfMaze.MazeGame.Space
 {
     public class Point
     {
@@ -13,7 +15,7 @@
 
         public static bool operator !=(Point a, Point b)
         {
-            return a.X != b.X && a.Y != b.Y;
+            return  a.X != b.X && a.Y != b.Y;
         }
     }
 }

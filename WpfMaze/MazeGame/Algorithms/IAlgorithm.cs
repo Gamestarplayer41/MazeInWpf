@@ -4,7 +4,7 @@ namespace WpfMaze.MazeGame.Algorithms
 {
     public interface IAlgorithm
     {
-        public bool stopThread { get; set; }
+        public bool StopThread { get; set; }
 
         public void SolveMaze();
 
