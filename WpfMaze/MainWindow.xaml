@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfMaze"
         mc:Ignorable="d"
         Title="MazeGame V1" Height="450" Width="800" MinWidth="500" MinHeight="250">
     <Grid>
@@ -15,23 +14,23 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Border x:Name="StackPanelBorder">
-            <StackPanel Grid.Row="1" Grid.Column="1" x:Name="StackPanel" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
                 <Canvas>
                     <Canvas.RenderTransform>
                         <MatrixTransform x:Name="MatrixTransform" />
                     </Canvas.RenderTransform>
-                    <Image x:Name="Bitmap" Stretch="UniformToFill"></Image>
+                    <Image x:Name="Bitmap" Stretch="UniformToFill" />
                 </Canvas>
             </StackPanel>
         </Border>
-        <Rectangle Grid.Column="2" Grid.Row="1" Fill="Gray"></Rectangle>
-        <StackPanel Grid.Row="1" Grid.Column="2">
+        <Rectangle Grid.Column="1" Grid.Row="0" Fill="Gray" />
+        <StackPanel Grid.Row="0" Grid.Column="1">
             <Button x:Name="CreateNewGame" Margin="10">Neues Spiel erstellen</Button>
-            <Button Click="Button_Click" Margin="10">Neu Ausrichten</Button>
+            <Button Click="OnResizeButtonClick" Margin="10">Neu Ausrichten</Button>
             <TextBlock Margin="10 10 10 0">Width:</TextBlock>
-            <TextBox x:Name="GameWidthInput" Margin="10 0 10 0"></TextBox>
+            <TextBox x:Name="GameWidthInput" Margin="10 0 10 0" />
             <TextBlock Margin="10 10 10 0">Height:</TextBlock>
-            <TextBox x:Name="GameHeightInput" Margin="10 0 10 0"></TextBox>
+            <TextBox x:Name="GameHeightInput" Margin="10 0 10 0" />
             <StackPanel x:Name="SolvingButtons" Margin="10 10 10 0">
                 <Button x:Name="WallfollowerAlgorithm">Wallfollower</Button>
                 <Button x:Name="RecursiveAlogrithm">Recursive</Button>

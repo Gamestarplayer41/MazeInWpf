@@ -5,8 +5,8 @@ namespace WpfMaze.MazeGame.Algorithms
 {
     public class AlgorithmThread
     {
-        private Thread Thread;
-        private IAlgorithm Algorithm;
+        private readonly IAlgorithm Algorithm;
+        private readonly Thread Thread;
 
         public AlgorithmThread(IAlgorithm algorithm)
         {
@@ -26,7 +26,7 @@ namespace WpfMaze.MazeGame.Algorithms
 
         public void injectMaze(MazeRewrite maze)
         {
-            Algorithm.injectMaze(maze);
+            Algorithm.InjectMaze(maze);
         }
     }
 }

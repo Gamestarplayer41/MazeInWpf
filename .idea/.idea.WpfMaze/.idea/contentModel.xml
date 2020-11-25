@@ -36,7 +36,7 @@
           </e>
         </e>
         <e p="obj" t="ExcludeRecursive">
-          <e p="Release" t="Include">
+          <e p="Debug" t="Include">
             <e p="netcoreapp3.1" t="Include">
               <e p="App.g.cs" t="Include" />
               <e p="MainWindow.g.cs" t="Include" />
@@ -46,6 +46,9 @@
         </e>
         <e p="Properties" t="Include">
           <e p="launchSettings.json" t="Include" />
+        </e>
+        <e p="Utils" t="Include">
+          <e p="ConsoleAllocator.cs" t="Include" />
         </e>
         <e p="WpfMaze.csproj" t="IncludeRecursive" />
       </e>

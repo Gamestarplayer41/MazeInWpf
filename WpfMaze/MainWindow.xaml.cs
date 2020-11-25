@@ -1,63 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using WpfMaze.Mazegame;
 using WpfMaze.MazeGame.Algorithms;
+using WpfMaze.MazeGame.Space;
+using WpfMaze.Utils;
+using Point = System.Windows.Point;
 
 namespace WpfMaze
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
-        private Maze Maze;
+        private int GameHeight = 10;
+        private int GameWidth = 10;
+
+        // private Maze Maze;
+
         private MazeRewrite MazeRewrite;
-        private System.Windows.Point? MousePos;
-        public int GameHeight = 10;
-        public int GameWidth = 10;
-
-        private static class ConsoleAllocator
-        {
-            [DllImport(@"kernel32.dll", SetLastError = true)]
-            static extern bool AllocConsole();
-
-            [DllImport(@"kernel32.dll")]
-            static extern IntPtr GetConsoleWindow();
-
-            [DllImport(@"user32.dll")]
-            static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
-
-            const int SwHide = 0;
-            const int SwShow = 5;
-
-
-            public static void ShowConsoleWindow()
-            {
-                var handle = GetConsoleWindow();
-
-                if (handle == IntPtr.Zero)
-                {
-                    AllocConsole();
-                }
-                else
-                {
-                    ShowWindow(handle, SwShow);
-                }
-            }
-
-            public static void HideConsoleWindow()
-            {
-                var handle = GetConsoleWindow();
-                ShowWindow(handle, SwHide);
-            }
-        }
+        private Point? MousePos;
 
 
         public MainWindow()
@@ -65,117 +26,119 @@ namespace WpfMaze
             ConsoleAllocator.ShowConsoleWindow();
             InitializeComponent();
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
-            this.StackPanelBorder.MouseLeftButtonDown += this.onBitmapLeftMouseDown;
-            this.StackPanelBorder.MouseLeftButtonUp += this.onBitmapLeftMouseUp;
-            this.StackPanelBorder.MouseMove += this.onBitmapMouseMove;
-            this.StackPanelBorder.MouseWheel += onBitapMouseWheel;
-            this.CreateNewGame.Click += this.onCreateNewGame;
-            this.SizeChanged += (sender, e) => zoomToSize();
-            this.StackPanel.MouseRightButtonDown += (sender, e) => { this.Maze.paintBitmaps(); };
-            this.KeyDown += this.movePlayer;
-            this.GameHeightInput.Text = Convert.ToString(this.GameHeight);
-            this.GameWidthInput.Text = Convert.ToString(this.GameWidth);
-            this.WallfollowerAlgorithm.Click += (sender, e) =>
-            {
-                IAlgorithm algo = new Wallfollower();
-                AlgorithmThread t = new AlgorithmThread(algo);
-                t.injectMaze(this.MazeRewrite);
-                t.startThread();
-            };
-            this.RecursiveAlogrithm.Click += (sender, e) =>
-            {
-                IAlgorithm algo = new Recursive();
-                AlgorithmThread t = new AlgorithmThread(algo);
-                t.injectMaze(this.MazeRewrite);
-                t.startThread();
-            };
-            this.onCreateNewGame(null, null);
+            CreateNewGame.Click += OnCreateNewGame;
+            SizeChanged += (sender, e) => ZoomToSize();
+            KeyDown += MovePlayer;
+            GameHeightInput.Text = Convert.ToString(GameHeight);
+            GameWidthInput.Text = Convert.ToString(GameWidth);
+            AlgorithmButtons();
+            StackPanelEvents();
+            OnCreateNewGame(null, null);
         }
 
-        private void onCreateNewGame(object sender, EventArgs e)
+        private void StackPanelEvents()
         {
-            this.GameWidth = Convert.ToInt32(this.GameWidthInput.Text);
-            this.GameHeight = Convert.ToInt32(this.GameHeightInput.Text);
-            this.MazeRewrite = new MazeRewrite(GameWidth, GameHeight);
-            Bitmap.Source = this.MazeRewrite.Bitmap;
-            this.MazeRewrite.onSolved += (maze, objects) =>
+            StackPanelBorder.MouseLeftButtonDown += OnBitmapLeftMouseDown;
+            StackPanelBorder.MouseLeftButtonUp += OnBitmapLeftMouseUp;
+            StackPanelBorder.MouseMove += OnBitmapMouseMove;
+            StackPanelBorder.MouseWheel += OnBitapMouseWheel;
+        }
+
+        private void AlgorithmButtons()
+        {
+            WallfollowerAlgorithm.Click += (sender, e) =>
+            {
+                IAlgorithm algo = new Wallfollower();
+                var t = new AlgorithmThread(algo);
+                t.injectMaze(MazeRewrite);
+                t.startThread();
+            };
+            RecursiveAlogrithm.Click += (sender, e) =>
+            {
+                IAlgorithm algo = new Recursive();
+                var t = new AlgorithmThread(algo);
+                t.injectMaze(MazeRewrite);
+                t.startThread();
+            };
+        }
+
+        private void OnCreateNewGame(object sender, EventArgs e)
+        {
+            GameWidth = Convert.ToInt32(GameWidthInput.Text);
+            GameHeight = Convert.ToInt32(GameHeightInput.Text);
+            MazeRewrite = new MazeRewrite(GameWidth, GameHeight);
+            Bitmap.Source = MazeRewrite.Bitmap;
+            MazeRewrite.OnSolved += (maze, objects) =>
             {
                 MessageBox.Show("Labyrinth Gelöst!", "Erfolg", MessageBoxButton.OK);
             };
         }
 
-        private void zoomToSize()
+        private void ZoomToSize()
         {
-            var matrix = MatrixTransform.Matrix;
-            double widthOrHeight = Math.Min(this.StackPanelBorder.ActualWidth, this.StackPanelBorder.ActualHeight);
-            double zoomLevel = widthOrHeight / (matrix.M11 * this.GameWidth);
+            Matrix matrix = MatrixTransform.Matrix;
+            var widthOrHeight = Math.Min(StackPanelBorder.ActualWidth, StackPanelBorder.ActualHeight);
+            var zoomLevel = widthOrHeight / (matrix.M11 * GameWidth);
             matrix.ScaleAtPrepend(zoomLevel, zoomLevel, 0, 0);
             matrix.OffsetX = 0;
             matrix.OffsetY = 0;
             MatrixTransform.Matrix = matrix;
         }
 
-        private void movePlayer(object sender, KeyEventArgs e)
+        private void MovePlayer(object sender, KeyEventArgs e)
         {
             switch (e.Key)
             {
                 case Key.W:
-                    this.MazeRewrite.MovePlayer(Direction.Up);
+                    MazeRewrite.MovePlayer(Direction.Up);
                     break;
                 case Key.D:
-                    this.MazeRewrite.MovePlayer(Direction.Right);
+                    MazeRewrite.MovePlayer(Direction.Right);
                     break;
                 case Key.S:
-                    this.MazeRewrite.MovePlayer(Direction.Down);
+                    MazeRewrite.MovePlayer(Direction.Down);
                     break;
                 case Key.A:
-                    this.MazeRewrite.MovePlayer(Direction.Left);
+                    MazeRewrite.MovePlayer(Direction.Left);
                     break;
             }
         }
 
-        private void injectMaze(Maze maze)
+        private void OnBitapMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            Bitmap.Source = maze.Bitmap;
-        }
-
-        private void onBitapMouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            var pos = e.GetPosition((UIElement)sender);
-            var matrix = MatrixTransform.Matrix;
+            Point pos = e.GetPosition((UIElement) sender);
+            Matrix matrix = MatrixTransform.Matrix;
             var scale = e.Delta > 0 ? 1.1 : 1 / 1.1;
             matrix.ScaleAt(scale, scale, pos.X, pos.Y);
             MatrixTransform.Matrix = matrix;
         }
 
-        private void onBitmapLeftMouseDown(object sender, MouseButtonEventArgs e)
+        private void OnBitmapLeftMouseDown(object sender, MouseButtonEventArgs e)
         {
-            var viewport = (UIElement)sender;
+            var viewport = (UIElement) sender;
             viewport.CaptureMouse();
             MousePos = e.GetPosition(viewport);
         }
 
-        private void onBitmapMouseMove(object sender, MouseEventArgs e)
+        private void OnBitmapMouseMove(object sender, MouseEventArgs e)
         {
-            if (MousePos.HasValue)
-            {
-                var pos = e.GetPosition((UIElement)sender);
-                var matrix = MatrixTransform.Matrix;
-                matrix.Translate(pos.X - MousePos.Value.X, pos.Y - MousePos.Value.Y);
-                MatrixTransform.Matrix = matrix;
-                MousePos = pos;
-            }
+            if (!MousePos.HasValue) return;
+            Point pos = e.GetPosition((UIElement) sender);
+            Matrix matrix = MatrixTransform.Matrix;
+            matrix.Translate(pos.X - MousePos.Value.X, pos.Y - MousePos.Value.Y);
+            MatrixTransform.Matrix = matrix;
+            MousePos = pos;
         }
 
-        private void onBitmapLeftMouseUp(object sender, MouseButtonEventArgs e)
+        private void OnBitmapLeftMouseUp(object sender, MouseButtonEventArgs e)
         {
-            ((UIElement)sender).ReleaseMouseCapture();
+            ((UIElement) sender).ReleaseMouseCapture();
             MousePos = null;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void OnResizeButtonClick(object sender, RoutedEventArgs e)
         {
-            this.zoomToSize();
+            ZoomToSize();
         }
     }
 }

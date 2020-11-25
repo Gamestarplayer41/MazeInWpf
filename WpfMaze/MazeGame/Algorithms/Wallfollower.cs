@@ -1,52 +1,47 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
-using System.Threading;
 using WpfMaze.Mazegame;
+using WpfMaze.MazeGame.Space;
 
 namespace WpfMaze.MazeGame.Algorithms
 {
-    class Wallfollower : AAlgorithm, IAlgorithm
+    internal class Wallfollower : AAlgorithm, IAlgorithm
     {
-        public bool stopThread { get; set; } = false;
-        private int dir = 1;
-        private Direction Heading = Direction.Down;
+        private readonly Path Path = new Path();
+        private int Dir = 1;
 
         private int X, Y;
-
-        private Path Path = new Path();
+        public new bool stopThread { get; set; } = false;
 
 
         public void SolveMaze()
         {
-            this.followWallNew();
+            FollowWallNew();
         }
 
-        public void injectMaze(MazeRewrite maze)
+        public void InjectMaze(MazeRewrite maze)
         {
-            this.Maze = maze;
+            Maze = maze;
             X = maze.Player.X;
             Y = maze.Player.Y;
         }
 
-        private void followWallNew()
+        private void FollowWallNew()
         {
-            Stopwatch watch = new Stopwatch();
+            var watch = new Stopwatch();
             watch.Start();
-            bool found = false;
+            var found = false;
             while (!found)
             {
                 Direction direction;
-                for (int i = -1; i < 3; i++)
+                for (var i = -1; i < 3; i++)
                 {
-                    direction = DirectionResolver(IntDirCalc(dir, i));
-                    if (isWall(direction))
+                    direction = DirectionResolver(IntDirCalc(Dir, i));
+                    if (IsWall(direction))
                         continue;
-                    dir = IntDirCalc(dir, i);
-                    Heading = direction;
+                    Dir = IntDirCalc(Dir, i);
                     Path.addElement(direction);
-                    (int deltaX, int deltaY) = direction.GetMovementDeltas();
+                    var (deltaX, deltaY) = direction.GetMovementDeltas();
                     X += deltaX;
                     Y += deltaY;
                     if (X == Maze.Finish.X && Y == Maze.Finish.Y)
@@ -54,43 +49,15 @@ namespace WpfMaze.MazeGame.Algorithms
                     break;
                 }
             }
+
             watch.Stop();
             Console.WriteLine(watch.ElapsedMilliseconds + "ms " + Path.Directions.Count + " elements");
         }
 
-        private bool isWall(Direction direction)
+        private bool IsWall(Direction direction)
         {
-            (int deltaX, int deltaY) = direction.GetMovementDeltas();
+            var (deltaX, deltaY) = direction.GetMovementDeltas();
             return Maze.Board[Y + deltaY, X + deltaX] == 1;
-        }
-
-        private void FollowWall()
-        {
-            while (!this.Maze.isSolved && !stopThread)
-            {
-                if (this.Maze.PlayerCanMove(DirectionResolver(IntDirCalc(dir, -1))))
-                {
-                    dir = IntDirCalc(dir, -1);
-                    this.Maze.MovePlayer(DirectionResolver(dir));
-                    this.Heading = DirectionResolver(dir);
-                }
-                else if (this.Maze.PlayerCanMove(DirectionResolver(dir)))
-                {
-                    this.Maze.MovePlayer(DirectionResolver(dir));
-                }
-                else if (this.Maze.PlayerCanMove(DirectionResolver(IntDirCalc(dir, 1))))
-                {
-                    dir = IntDirCalc(dir, 1);
-                    this.Maze.MovePlayer(DirectionResolver(dir));
-                    this.Heading = DirectionResolver(dir);
-                }
-                else if (this.Maze.PlayerCanMove(DirectionResolver(IntDirCalc(dir, 2))))
-                {
-                    dir = IntDirCalc(dir, 2);
-                    this.Maze.MovePlayer(DirectionResolver(dir));
-                    this.Heading = DirectionResolver(dir);
-                }
-            }
         }
 
         private int IntDirCalc(int dir, int add)

@@ -1,18 +1,17 @@
 ﻿using System;
-using System.Net;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Point = WpfMaze.Mazegame.Point;
+using Point = WpfMaze.MazeGame.Space.Point;
 
-namespace WpfMaze.MazeGame
+namespace WpfMaze.MazeGame.Painting
 {
     internal class BitmapPart
     {
         public WriteableBitmap Bitmap;
         public Point Start;
 
-        public int written = 0;
+        public int Written = 0;
 
 
         public BitmapPart(int width, int height, int x, int y)
@@ -23,11 +22,7 @@ namespace WpfMaze.MazeGame
             Start.Y = y;
         }
 
-        public int width;
-
-        public int height;
-
-        public static void DrawPixel(int x, int y, int[] Color, IntPtr backBuffer,int stride)
+        public static void DrawPixel(int x, int y, int[] color, IntPtr backBuffer, int stride)
         {
             var column = y;
             var row = x;
@@ -40,13 +35,14 @@ namespace WpfMaze.MazeGame
                 backBuffer += column * 4;
 
                 // Compute the pixel's color.
-                var color_data = Color[0] << 16; // R
-                color_data |= Color[1] << 8; // G
-                color_data |= Color[2] << 0; // B
+                var colorData = color[0] << 16; // R
+                colorData |= color[1] << 8; // G
+                colorData |= color[2] << 0; // B
 
                 // Assign the color data to the pixel.
-                *(int*)backBuffer = color_data;
+                *(int*) backBuffer = colorData;
             }
+
             // Specify the area of the bitmap that changed.
             //Application.Current.Dispatcher.Invoke(() =>
             //Bitmap.AddDirtyRect(new Int32Rect(column, row, 1, 1)));
@@ -54,10 +50,10 @@ namespace WpfMaze.MazeGame
 
         public void ErasePixel(int x, int y)
         {
-            byte[] ColorData = { 0, 0, 0, 0 }; // B G R
+            byte[] colorData = {0, 0, 0, 0}; // B G R
             var rect = new Int32Rect(y, x, 1, 1);
 
-            Bitmap.WritePixels(rect, ColorData, 4, 0);
+            Bitmap.WritePixels(rect, colorData, 4, 0);
         }
     }
 }

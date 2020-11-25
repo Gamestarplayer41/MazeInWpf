@@ -1,4 +1,4 @@
-﻿namespace WpfMaze.MazeGame
+﻿namespace WpfMaze.MazeGame.Painting
 {
     public enum Color
     {

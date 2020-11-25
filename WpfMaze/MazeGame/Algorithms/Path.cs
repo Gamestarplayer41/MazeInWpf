@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using WpfMaze.Mazegame;
+using WpfMaze.MazeGame.Space;
 
 namespace WpfMaze.MazeGame.Algorithms
 {
@@ -19,7 +19,7 @@ namespace WpfMaze.MazeGame.Algorithms
 
         public Direction removeLastElement()
         {
-            Direction direction = Directions[Directions.Count-1];
+            Direction direction = Directions[Directions.Count - 1];
             Directions.RemoveAt(Directions.Count - 1);
             return direction;
         }

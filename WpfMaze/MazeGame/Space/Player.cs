@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WpfMaze.Mazegame
+﻿namespace WpfMaze.MazeGame.Space
 {
     public class Player : Point
     {
-        public int[] Color = {11, 14, 56};
-        public Player(int X, int Y)
+        public readonly int[] Color = {11, 14, 56};
+
+        public Player(int x, int y)
         {
-            this.X = X;
-            this.Y = Y;
+            X = x;
+            Y = y;
         }
     }
 }

@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WpfMaze.Mazegame
+﻿namespace WpfMaze.MazeGame.Space
 {
     public class Finish : Point
     {
+        public int[] Color = {245, 66, 120};
 
-        public int[] Color = {245, 66,120};
-        public Finish(int X, int Y)
+        public Finish(int x, int y)
         {
-            this.X = X;
-            this.Y = Y;
+            X = x;
+            Y = y;
         }
     }
 }

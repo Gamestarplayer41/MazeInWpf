@@ -1,4 +1,4 @@
-﻿namespace WpfMaze.Mazegame
+﻿namespace WpfMaze.MazeGame.Space
 {
     public static class DirectionExtension
     {
