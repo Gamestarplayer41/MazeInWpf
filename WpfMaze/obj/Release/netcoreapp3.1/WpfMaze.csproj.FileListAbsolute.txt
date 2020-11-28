@@ -16,3 +16,6 @@ C:\Users\games\Desktop\WpfMaze\WpfMaze\obj\Release\netcoreapp3.1\WpfMaze.csproj.
 C:\Users\games\Desktop\WpfMaze\WpfMaze\obj\Release\netcoreapp3.1\WpfMaze.dll
 C:\Users\games\Desktop\WpfMaze\WpfMaze\obj\Release\netcoreapp3.1\WpfMaze.pdb
 C:\Users\games\Desktop\WpfMaze\WpfMaze\obj\Release\netcoreapp3.1\WpfMaze.genruntimeconfig.cache
+C:\Users\games\Desktop\WpfMaze\WpfMaze\obj\Release\netcoreapp3.1\DevControlWindow.g.cs
+C:\Users\games\Desktop\WpfMaze\WpfMaze\obj\Release\netcoreapp3.1\WpfMaze_MarkupCompile.lref
+C:\Users\games\Desktop\WpfMaze\WpfMaze\obj\Release\netcoreapp3.1\DevControlWindow.baml

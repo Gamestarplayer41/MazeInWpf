@@ -1,26 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.DirectoryServices.ActiveDirectory;
 using WpfMaze.Mazegame;
 using WpfMaze.MazeGame.Space;
 
 namespace WpfMaze.MazeGame.Algorithms
 {
-    public class Recursive : IAlgorithm
+    public class Recursive : AAlgorithm
     {
-        //overhead prevention
-        private readonly List<Direction> CleanedDirections = new List<Direction>();
-        private readonly Path Path = new Path();
-        private readonly List<Direction> PossibleDirections = new List<Direction>();
-        private readonly Random Random = new Random();
+        private List<Direction> CleanedDirections { get; }
 
+        private List<Direction> PossibleDirections { get; }
 
-        private MazeRewrite Maze;
+        private Random Random { get; } = new Random();
+
         private byte[,] Visited;
         private int X, Y;
-        public bool StopThread { get; set; }
 
-        public void SolveMaze()
+        public Recursive(MazeRewrite maze)
+        {
+            Maze = maze;
+            Visited = new byte[Maze.Height, Maze.Width];
+            CleanedDirections = new List<Direction>();
+            PossibleDirections = new List<Direction>();
+        }
+
+        public override void SolveMaze()
         {
             var watch = new Stopwatch();
             watch.Start();
@@ -34,13 +40,14 @@ namespace WpfMaze.MazeGame.Algorithms
                 GetDirectionsNotVisited();
                 if (CleanedDirections.Count == 0)
                 {
+                    if (Path.Directions.Count == 0)
+                        return;
                     Direction oldDir = Path.RemoveLastElement();
                     var (deltaXOld, deltaYOld) = oldDir.GetMovementDeltas();
                     X -= deltaXOld;
                     Y -= deltaYOld;
                     continue;
                 }
-
                 Direction dir = CleanedDirections[Random.Next(CleanedDirections.Count)];
                 var (deltaX, deltaY) = dir.GetMovementDeltas();
                 Path.AddElement(dir);
@@ -50,15 +57,8 @@ namespace WpfMaze.MazeGame.Algorithms
                 if (Maze.Finish.X == X && Maze.Finish.Y == Y)
                     found = true;
             }
-
             watch.Stop();
             Console.WriteLine(watch.ElapsedMilliseconds + "ms " + Path.Directions.Count + " elements");
-        }
-
-        public void InjectMaze(MazeRewrite maze)
-        {
-            Maze = maze;
-            Visited = new byte[maze.Height, maze.Width];
         }
 
         private void GetDirectionsNotVisited()

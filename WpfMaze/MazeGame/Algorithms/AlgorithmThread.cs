@@ -5,10 +5,10 @@ namespace WpfMaze.MazeGame.Algorithms
 {
     public class AlgorithmThread
     {
-        private readonly IAlgorithm Algorithm;
+        private readonly AAlgorithm Algorithm;
         private readonly Thread Thread;
 
-        public AlgorithmThread(IAlgorithm algorithm)
+        public AlgorithmThread(AAlgorithm algorithm)
         {
             Algorithm = algorithm;
             Thread = new Thread(Algorithm.SolveMaze);

@@ -13,16 +13,17 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Border x:Name="StackPanelBorder">
-            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
-                <Canvas>
-                    <Canvas.RenderTransform>
-                        <MatrixTransform x:Name="MatrixTransform" />
-                    </Canvas.RenderTransform>
-                    <Image x:Name="Bitmap" Stretch="UniformToFill" />
-                </Canvas>
-            </StackPanel>
-        </Border>
+        <Canvas x:Name="BitmapCanvas">
+            <Canvas.RenderTransform>
+                <MatrixTransform x:Name="MatrixTransform">
+                    <MatrixTransform.Matrix>
+                        <Matrix OffsetX="0" OffsetY="0" />
+                    </MatrixTransform.Matrix>
+                </MatrixTransform>
+            </Canvas.RenderTransform>
+            <Image x:Name="Bitmap" Stretch="UniformToFill" />
+        </Canvas>
+        <Rectangle Grid.Column="0" Stretch="Fill" Fill="Transparent" x:Name="MouseEventRectangle" Grid.Row="0" />
         <Rectangle Grid.Column="1" Grid.Row="0" Fill="Gray" />
         <StackPanel Grid.Row="0" Grid.Column="1">
             <Button x:Name="CreateNewGame" Margin="10">Neues Spiel erstellen</Button>
@@ -31,10 +32,11 @@
             <TextBox x:Name="GameWidthInput" Margin="10 0 10 0" />
             <TextBlock Margin="10 10 10 0">Height:</TextBlock>
             <TextBox x:Name="GameHeightInput" Margin="10 0 10 0" />
-            <StackPanel x:Name="SolvingButtons" Margin="10 10 10 0">
+            <StackPanel x:Name="SolvingButtons" Margin="10 10 10 10">
                 <Button x:Name="WallfollowerAlgorithm">Wallfollower</Button>
                 <Button x:Name="RecursiveAlogrithm">Recursive</Button>
             </StackPanel>
+            <Button Click="OpenDevToolWindowButtonClick" Margin="10 0 10 0">Open Devtools</Button>
         </StackPanel>
     </Grid>
 

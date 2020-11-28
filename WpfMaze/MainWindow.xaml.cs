@@ -4,6 +4,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using WpfMaze.Mazegame;
 using WpfMaze.MazeGame.Algorithms;
+using WpfMaze.Mazegame.MazeGenerationAlgorithms;
 using WpfMaze.MazeGame.Space;
 using WpfMaze.Utils;
 using Point = System.Windows.Point;
@@ -12,13 +13,10 @@ namespace WpfMaze
 {
     public partial class MainWindow
     {
-        private int GameHeight = 10;
-        private int GameWidth = 10;
-
-        // private Maze Maze;
-
-        private MazeRewrite MazeRewrite;
-        private Point? MousePos;
+        private int GameHeight { get; set; } = 10;
+        private int GameWidth { get; set; } = 10;
+        private MazeRewrite MazeRewrite { get; set; }
+        private Point? MousePos { get; set; }
 
 
         public MainWindow()
@@ -27,7 +25,7 @@ namespace WpfMaze
             InitializeComponent();
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
             CreateNewGame.Click += OnCreateNewGame;
-            SizeChanged += (sender, e) => ZoomToSize();
+            SizeChanged += (_, _) => ZoomToSize();
             KeyDown += MovePlayer;
             GameHeightInput.Text = Convert.ToString(GameHeight);
             GameWidthInput.Text = Convert.ToString(GameWidth);
@@ -38,26 +36,24 @@ namespace WpfMaze
 
         private void StackPanelEvents()
         {
-            StackPanelBorder.MouseLeftButtonDown += OnBitmapLeftMouseDown;
-            StackPanelBorder.MouseLeftButtonUp += OnBitmapLeftMouseUp;
-            StackPanelBorder.MouseMove += OnBitmapMouseMove;
-            StackPanelBorder.MouseWheel += OnBitapMouseWheel;
+            MouseEventRectangle.MouseLeftButtonDown += OnBitmapLeftMouseDown;
+            MouseEventRectangle.MouseLeftButtonUp += OnBitmapLeftMouseUp;
+            MouseEventRectangle.MouseMove += OnBitmapMouseMove;
+            MouseEventRectangle.MouseWheel += OnBitapMouseWheel;
         }
 
         private void AlgorithmButtons()
         {
             WallfollowerAlgorithm.Click += (sender, e) =>
             {
-                IAlgorithm algo = new Wallfollower();
+                AAlgorithm algo = new Wallfollower(MazeRewrite);
                 var t = new AlgorithmThread(algo);
-                t.InjectMaze(MazeRewrite);
                 t.StartThread();
             };
             RecursiveAlogrithm.Click += (sender, e) =>
             {
-                IAlgorithm algo = new Recursive();
+                AAlgorithm algo = new Recursive(MazeRewrite);
                 var t = new AlgorithmThread(algo);
-                t.InjectMaze(MazeRewrite);
                 t.StartThread();
             };
         }
@@ -66,22 +62,20 @@ namespace WpfMaze
         {
             GameWidth = Convert.ToInt32(GameWidthInput.Text);
             GameHeight = Convert.ToInt32(GameHeightInput.Text);
-            MazeRewrite = new MazeRewrite(GameWidth, GameHeight);
+            MazeRewrite = new MazeRewrite(GameWidth, GameHeight, typeof(BinaryTree));
             Bitmap.Source = MazeRewrite.Bitmap;
-            MazeRewrite.OnSolved += (maze, objects) =>
-            {
-                MessageBox.Show("Labyrinth Gelöst!", "Erfolg", MessageBoxButton.OK);
-            };
+            MazeRewrite.OnSolved += (_, _) => { MessageBox.Show("Labyrinth Gelöst!", "Erfolg", MessageBoxButton.OK); };
         }
 
         private void ZoomToSize()
         {
             Matrix matrix = MatrixTransform.Matrix;
-            var widthOrHeight = Math.Min(StackPanelBorder.ActualWidth, StackPanelBorder.ActualHeight);
-            var zoomLevel = widthOrHeight / (matrix.M11 * GameWidth);
-            matrix.ScaleAtPrepend(zoomLevel, zoomLevel, 0, 0);
             matrix.OffsetX = 0;
             matrix.OffsetY = 0;
+            var scale = Math.Min(BitmapCanvas.ActualWidth / MazeRewrite.Width,BitmapCanvas.ActualHeight/MazeRewrite.Height);
+            matrix.M11 = 1;
+            matrix.M22 = 1;
+            matrix.Scale(scale, scale);
             MatrixTransform.Matrix = matrix;
         }
 
@@ -90,7 +84,7 @@ namespace WpfMaze
             switch (e.Key)
             {
                 case Key.W:
-                    MazeRewrite.MovePlayer(Direction.Up);
+                    MazeRewrite.MovePlayer(Direction.Up); 
                     break;
                 case Key.D:
                     MazeRewrite.MovePlayer(Direction.Right);
@@ -101,7 +95,12 @@ namespace WpfMaze
                 case Key.A:
                     MazeRewrite.MovePlayer(Direction.Left);
                     break;
-            }
+                case Key.R:
+                    OnCreateNewGame(null,null);
+                    ZoomToSize();
+                    return; 
+            } 
+            ZoomToPlayer();
         }
 
         private void OnBitapMouseWheel(object sender, MouseWheelEventArgs e)
@@ -139,6 +138,26 @@ namespace WpfMaze
         private void OnResizeButtonClick(object sender, RoutedEventArgs e)
         {
             ZoomToSize();
+        }
+
+        private void OpenDevToolWindowButtonClick(object sender, RoutedEventArgs routedEventArgs)
+        {
+            Window devtool = new DevControlWindow();
+            devtool.Show();
+        }
+
+        public void ZoomToPlayer()
+        {
+            Matrix matrix = MatrixTransform.Matrix;
+            matrix.M11 = 1;
+            matrix.M22 = 1;
+            var scale = Math.Min(BitmapCanvas.ActualWidth / MazeRewrite.Width,
+                BitmapCanvas.ActualHeight / MazeRewrite.Height);
+            scale *= MazeRewrite.Width / 10;
+            matrix.Scale(scale,scale);
+            matrix.OffsetX = (BitmapCanvas.ActualWidth / 2 - scale / 2) - MazeRewrite.Player.X * scale;
+            matrix.OffsetY = (BitmapCanvas.ActualHeight / 2 - scale / 2) - MazeRewrite.Player.Y * scale;
+            MatrixTransform.Matrix = matrix;
         }
     }
 }

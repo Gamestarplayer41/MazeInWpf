@@ -1,29 +1,26 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Windows.Automation;
 using WpfMaze.Mazegame;
 using WpfMaze.MazeGame.Space;
 
 namespace WpfMaze.MazeGame.Algorithms
 {
-    internal class Wallfollower : AAlgorithm, IAlgorithm
+    internal class Wallfollower : AAlgorithm
     {
-        private readonly Path Path = new Path();
-        private int Dir = 1;
-
+        private int Dir { get; set; } = 1;
         private int X, Y;
-        public bool StopThread { get; set; } = false;
 
-
-        public void SolveMaze()
+        public Wallfollower(MazeRewrite maze)
         {
-            FollowWallNew();
-        }
-
-        public void InjectMaze(MazeRewrite maze)
-        {
-            Maze = maze;
+            base.InjectMaze(maze);
             X = maze.Player.X;
             Y = maze.Player.Y;
+        }
+
+        public override void SolveMaze()
+        {
+            FollowWallNew();
         }
 
         private void FollowWallNew()
@@ -31,8 +28,12 @@ namespace WpfMaze.MazeGame.Algorithms
             var watch = new Stopwatch();
             watch.Start();
             var found = false;
+            int steps = 0;
+            int maximumSteps = (int) Math.Pow(Maze.Height * Maze.Width, 2);
             while (!found)
             {
+                if(steps == maximumSteps)
+                    return;
                 Direction direction;
                 for (var i = -1; i < 3; i++)
                 {
@@ -48,6 +49,8 @@ namespace WpfMaze.MazeGame.Algorithms
                         found = true;
                     break;
                 }
+
+                steps++;
             }
 
             watch.Stop();

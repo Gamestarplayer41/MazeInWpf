@@ -1,114 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using WpfMaze.Mazegame.MazeGenerationAlgorithms;
-using WpfMaze.MazeGame.Space;
+using System.Windows.Documents;
 
-namespace WpfMaze.Mazegame
+namespace WpfMaze.Mazegame.MazeGenerationAlgorithms
 {
-    public class MazeRewrite
+    public class PrimsAlgorithm : AMazeAlgorithm
     {
-        public delegate void MazeEvent(MazeRewrite maze, object args);
-
-        public WriteableBitmap Bitmap { get; private set; }
-        public byte[,] Board { get; }
-
-        public Finish Finish { get; private set; }
-
-        public Player Player { get; private set; }
-
-        private List<AMazeAlgorithm> Algorithms = new List<AMazeAlgorithm>();
-
-        public MazeRewrite(int width, int height, Type algorithm, bool randomize = true)
+        public PrimsAlgorithm(byte[,] board)
         {
-            Board = new byte[height, width];
-            this.SetAlgorithms();
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                Bitmap = new WriteableBitmap(width, height, 96, 96, PixelFormats.Bgr32, null);
-            });
-            AMazeAlgorithm algo = Algorithms.Find(x => x.GetType().Equals(algorithm));
-            algo?.GenerateMaze();
-            SetPlayerAndFinish();
-            CalculateBitmap();
+            Board = board;
         }
-
-        private void SetAlgorithms()
+        
+        public override void GenerateMaze()
         {
-            Algorithms.Add(new BinaryTree(Board));
-            Algorithms.Add(new PrimsAlgorithm(Board));
-        }
-
-        private void SetPlayerAndFinish()
-        {
-            Random random = new Random();
-            int r, c;
-            do
-            {
-                r = random.Next(1, Height - 2);
-                c = random.Next(1, Width - 2);
-            } while (Board[r, c] != 0);
-
-            Player = new Player(c, r);
-            int deltaX, deltaY, delta;
-            // position exit point
-            do
-            {
-                r = random.Next(1, Height - 2);
-                c = random.Next(1, Width - 2);
-                deltaX = Player.X - c;
-                deltaY = Player.Y - r;
-                delta = (int) (Math.Pow(deltaX, 2) + Math.Pow(deltaY, 2));
-            } while (Board[r, c] != 0 || delta < 3);
-
-            Finish = new Finish(c, r);
-        }
-
-        public bool IsSolved => Player == Finish;
-
-        public int Width => Board.GetLength(1);
-
-        public int Height => Board.GetLength(0);
-
-
-        public event MazeEvent OnSolved;
-
-
-        public void binaryTree()
-        {
-            Random random = new Random();
-            List<Direction> possibleNeighbors = new List<Direction>();
-            for (int i = 0; i < Width; i++)
-            {
-                for (int j = 0; j < Height; j++)
-                {
-                    Board[j, i] = 1;
-                }
-            }
-
-            for (int x = 0; x < Width; x += 2)
-            {
-                for (int y = 0; y < Height; y += 2)
-                {
-                }
-            }
-        }
-
-
-        private void CalculateMaze()
-        {
-            // This algorithm is a randomized version of Prim's algorithm. (see https://en.wikipedia.org/wiki/Maze_generation_algorithm#Randomized_Prim%27s_algorithm)
+             // This algorithm is a randomized version of Prim's algorithm. (see https://en.wikipedia.org/wiki/Maze_generation_algorithm#Randomized_Prim%27s_algorithm)
             var random = new Random();
             int r, c;
 
             // Start with a grid full of walls.
             for (r = 0; r < Height; r++)
-            for (c = 0; c < Width; c++)
-                Board[r, c] = 1;
+                for (c = 0; c < Width; c++)
+                    Board[r, c] = 1;
 
             // Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list.
             var walls = new List<(int Row, int Col)>();
@@ -239,33 +151,10 @@ namespace WpfMaze.Mazegame
                             walls.Add((unvisitedCell.Row, unvisitedCell.Col - 1));
                     }
                 }
-
                 walls.RemoveAt(index);
             }
-
-            // position player spawn
-            do
-            {
-                r = random.Next(1, Height - 2);
-                c = random.Next(1, Width - 2);
-            } while (Board[r, c] != 0);
-
-            Player = new Player(c, r);
-            int deltaX, deltaY, delta;
-            // position exit point
-            do
-            {
-                r = random.Next(1, Height - 2);
-                c = random.Next(1, Width - 2);
-                deltaX = Player.X - c;
-                deltaY = Player.Y - r;
-                delta = (int) (Math.Pow(deltaX, 2) + Math.Pow(deltaY, 2));
-            } while (Board[r, c] != 0 || delta < 3);
-
-            Finish = new Finish(c, r);
-            CalculateBitmap();
         }
-
+        
         private bool IsInBounds(int row, int col)
         {
             if (row <= 0)
@@ -277,91 +166,6 @@ namespace WpfMaze.Mazegame
             if (row > Height - 2)
                 return false;
             return true;
-        }
-
-        private async void CalculateBitmap()
-        {
-            var backbuffer = new IntPtr();
-            var stride = 0;
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                Bitmap.TryLock(Duration.Forever);
-                backbuffer = Bitmap.BackBuffer;
-                stride = Bitmap.BackBufferStride;
-            });
-            await Task.Run(() =>
-            {
-                for (var y = 0; y < Height; y++)
-                for (var x = 0; x < Width; x++)
-                    if (Player.X == x && Player.Y == y)
-                        DrawPixel(x, y, Player.Color, backbuffer, stride);
-                    else if (Finish.X == x && Finish.Y == y)
-                        DrawPixel(x, y, Finish.Color, backbuffer, stride);
-                    else if (Board[y, x] == 1)
-                        DrawPixel(x, y, new[] {0, 0, 0}, backbuffer, stride);
-                    else
-                        DrawPixel(x, y, new[] {255, 255, 255}, backbuffer, stride);
-            });
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                Bitmap.AddDirtyRect(new Int32Rect(0, 0, Width, Height));
-                Bitmap.Unlock();
-            });
-        }
-
-        private void RenderPlayerPosition(Player oldPlayerPosition)
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                Bitmap.TryLock(Duration.Forever);
-                DrawPixel(oldPlayerPosition.X, oldPlayerPosition.Y, new[] {237, 175, 166}, Bitmap.BackBuffer,
-                    Bitmap.BackBufferStride);
-                DrawPixel(Player.X, Player.Y, Player.Color, Bitmap.BackBuffer, Bitmap.BackBufferStride);
-                Bitmap.AddDirtyRect(new Int32Rect(0, 0, Width, Height));
-                Bitmap.Unlock();
-            });
-        }
-
-        public bool MovePlayer(Direction direction)
-        {
-            if (!PlayerCanMove(direction))
-                return false;
-            var (deltaX, deltaY) = direction.GetMovementDeltas();
-            var oldPlayerPosition = new Player(Player.X, Player.Y);
-            Player.X += deltaX;
-            Player.Y += deltaY;
-            RenderPlayerPosition(oldPlayerPosition);
-            if (IsSolved)
-                OnSolved?.Invoke(this, null);
-            return true;
-        }
-
-        public bool PlayerCanMove(Direction direction)
-        {
-            if (IsSolved)
-                return false;
-            var (deltaX, deltaY) = direction.GetMovementDeltas();
-            return Board[Player.Y + deltaY, Player.X + deltaX] == 0;
-        }
-
-        private static void DrawPixel(int x, int y, int[] color, IntPtr backBuffer, int stride)
-        {
-            var column = x;
-            var row = y;
-            unsafe
-            {
-                // Find the address of the pixel to draw.
-                backBuffer += row * stride;
-                backBuffer += column * 4;
-
-                // Compute the pixel's color.
-                var colorData = color[0] << 16; // R
-                colorData |= color[1] << 8; // G
-                colorData |= color[2] << 0; // B
-
-                // Assign the color data to the pixel.
-                *(int*) backBuffer = colorData;
-            }
         }
     }
 }
