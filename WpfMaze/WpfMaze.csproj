@@ -15,8 +15,8 @@
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		<Prefer32bit>true</Prefer32bit>
-		<PlatformTarget>AnyCPU</PlatformTarget>
+		<Prefer32bit>false</Prefer32bit>
+		<PlatformTarget>x64</PlatformTarget>
 		<Optimize>true</Optimize>
 	</PropertyGroup>
 

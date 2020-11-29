@@ -2,7 +2,7 @@
 {
     public class Finish : Point
     {
-        public int[] Color = {245, 66, 120};
+        public byte[] Color = {245, 66, 120};
 
         public Finish(int x, int y)
         {

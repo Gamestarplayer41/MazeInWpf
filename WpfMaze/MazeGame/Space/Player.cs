@@ -2,7 +2,7 @@
 {
     public class Player : Point
     {
-        public readonly int[] Color = {11, 140, 56};
+        public readonly byte[] Color = {255, 0,0};
 
         public Player(int x, int y)
         {

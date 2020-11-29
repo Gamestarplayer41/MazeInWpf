@@ -72,7 +72,7 @@ namespace WpfMaze
             Matrix matrix = MatrixTransform.Matrix;
             matrix.OffsetX = 0;
             matrix.OffsetY = 0;
-            var scale = Math.Min(BitmapCanvas.ActualWidth / MazeRewrite.Width,BitmapCanvas.ActualHeight/MazeRewrite.Height);
+            var scale = Math.Min(BitmapCanvas.ActualWidth / MazeRewrite.Width, BitmapCanvas.ActualHeight / MazeRewrite.Height);
             matrix.M11 = 1;
             matrix.M22 = 1;
             matrix.Scale(scale, scale);
@@ -84,7 +84,7 @@ namespace WpfMaze
             switch (e.Key)
             {
                 case Key.W:
-                    MazeRewrite.MovePlayer(Direction.Up); 
+                    MazeRewrite.MovePlayer(Direction.Up);
                     break;
                 case Key.D:
                     MazeRewrite.MovePlayer(Direction.Right);
@@ -96,16 +96,18 @@ namespace WpfMaze
                     MazeRewrite.MovePlayer(Direction.Left);
                     break;
                 case Key.R:
-                    OnCreateNewGame(null,null);
+                    OnCreateNewGame(null, null);
                     ZoomToSize();
-                    return; 
-            } 
+                    return;
+                default:
+                    return;
+            }
             ZoomToPlayer();
         }
 
         private void OnBitapMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            Point pos = e.GetPosition((UIElement) sender);
+            Point pos = e.GetPosition((UIElement)sender);
             Matrix matrix = MatrixTransform.Matrix;
             var scale = e.Delta > 0 ? 1.1 : 1 / 1.1;
             matrix.ScaleAt(scale, scale, pos.X, pos.Y);
@@ -114,7 +116,7 @@ namespace WpfMaze
 
         private void OnBitmapLeftMouseDown(object sender, MouseButtonEventArgs e)
         {
-            var viewport = (UIElement) sender;
+            var viewport = (UIElement)sender;
             viewport.CaptureMouse();
             MousePos = e.GetPosition(viewport);
         }
@@ -122,7 +124,7 @@ namespace WpfMaze
         private void OnBitmapMouseMove(object sender, MouseEventArgs e)
         {
             if (!MousePos.HasValue) return;
-            Point pos = e.GetPosition((UIElement) sender);
+            Point pos = e.GetPosition((UIElement)sender);
             Matrix matrix = MatrixTransform.Matrix;
             matrix.Translate(pos.X - MousePos.Value.X, pos.Y - MousePos.Value.Y);
             MatrixTransform.Matrix = matrix;
@@ -131,7 +133,7 @@ namespace WpfMaze
 
         private void OnBitmapLeftMouseUp(object sender, MouseButtonEventArgs e)
         {
-            ((UIElement) sender).ReleaseMouseCapture();
+            ((UIElement)sender).ReleaseMouseCapture();
             MousePos = null;
         }
 
@@ -154,7 +156,7 @@ namespace WpfMaze
             var scale = Math.Min(BitmapCanvas.ActualWidth / MazeRewrite.Width,
                 BitmapCanvas.ActualHeight / MazeRewrite.Height);
             scale *= MazeRewrite.Width / 10;
-            matrix.Scale(scale,scale);
+            matrix.Scale(scale, scale);
             matrix.OffsetX = (BitmapCanvas.ActualWidth / 2 - scale / 2) - MazeRewrite.Player.X * scale;
             matrix.OffsetY = (BitmapCanvas.ActualHeight / 2 - scale / 2) - MazeRewrite.Player.Y * scale;
             MatrixTransform.Matrix = matrix;

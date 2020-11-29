@@ -11,6 +11,12 @@ namespace WpfMaze.MazeGame.Algorithms
         private int Dir { get; set; } = 1;
         private int X, Y;
 
+        Direction DirectionUp = Direction.Up;
+        Direction DirectionDown = Direction.Down;
+        Direction DirectionLeft = Direction.Left;
+        Direction DirectionRight = Direction.Right;
+
+
         public Wallfollower(MazeRewrite maze)
         {
             base.InjectMaze(maze);
@@ -30,12 +36,13 @@ namespace WpfMaze.MazeGame.Algorithms
             var found = false;
             int steps = 0;
             int maximumSteps = (int) Math.Pow(Maze.Height * Maze.Width, 2);
+            Direction direction;
+            int i = -1;
             while (!found)
             {
-                if(steps == maximumSteps)
+                if (steps == maximumSteps)
                     return;
-                Direction direction;
-                for (var i = -1; i < 3; i++)
+                for (i = -1; i < 3; i++)
                 {
                     direction = DirectionResolver(IntDirCalc(Dir, i));
                     if (IsWall(direction))
@@ -49,10 +56,8 @@ namespace WpfMaze.MazeGame.Algorithms
                         found = true;
                     break;
                 }
-
                 steps++;
             }
-
             watch.Stop();
             Console.WriteLine(watch.ElapsedMilliseconds + "ms " + Path.Directions.Count + " elements");
         }
@@ -73,20 +78,20 @@ namespace WpfMaze.MazeGame.Algorithms
             return dir;
         }
 
-        private Direction DirectionResolver(int dir)
+        private ref Direction DirectionResolver(int dir)
         {
             switch (dir)
             {
                 case 1:
-                    return Direction.Down;
+                    return ref DirectionDown;
                 case 2:
-                    return Direction.Left;
+                    return ref DirectionLeft;
                 case 3:
-                    return Direction.Up;
+                    return ref DirectionUp;
                 case 4:
-                    return Direction.Right;
+                    return ref DirectionRight;
                 default:
-                    return Direction.Down;
+                    return ref DirectionDown;
             }
         }
     }
