@@ -34,9 +34,9 @@ namespace WpfMaze.Mazegame
             this.calculateMaze(algorithm);
         }
 
-        private void calculateMaze(Type algorithm)
+        private async void calculateMaze(Type algorithm)
         {
-            Task.Run(() =>
+             await Task.Run(() =>
             {
                 AMazeAlgorithm algo = Algorithms.Find(x => x.GetType().Equals(algorithm));
                 algo?.GenerateMaze();
@@ -60,7 +60,7 @@ namespace WpfMaze.Mazegame
                 r = random.Next(1, Height - 2);
                 c = random.Next(1, Width - 2);
             } while (Board[r, c] != 0);
-
+            
             Player = new Player(c, r);
             int deltaX, deltaY, delta;
             // position exit point
@@ -72,7 +72,7 @@ namespace WpfMaze.Mazegame
                 deltaY = Player.Y - r;
                 delta = (int)(Math.Pow(deltaX, 2) + Math.Pow(deltaY, 2));
             } while (Board[r, c] != 0 || delta < 3);
-
+            
             Finish = new Finish(c, r);
         }
 
@@ -268,7 +268,7 @@ namespace WpfMaze.Mazegame
                 deltaX = Player.X - c;
                 deltaY = Player.Y - r;
                 delta = (int)(Math.Pow(deltaX, 2) + Math.Pow(deltaY, 2));
-            } while (Board[r, c] != 0 || delta < 3);
+            } while (Board[r, c] != 0);
 
             Finish = new Finish(c, r);
             CalculateBitmap();

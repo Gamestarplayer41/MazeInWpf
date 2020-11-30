@@ -11,11 +11,6 @@ namespace WpfMaze.MazeGame.Algorithms
         private int Dir { get; set; } = 1;
         private int X, Y;
 
-        Direction DirectionUp = Direction.Up;
-        Direction DirectionDown = Direction.Down;
-        Direction DirectionLeft = Direction.Left;
-        Direction DirectionRight = Direction.Right;
-
 
         public Wallfollower(MazeRewrite maze)
         {

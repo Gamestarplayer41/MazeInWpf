@@ -56,6 +56,12 @@ namespace WpfMaze
                 var t = new AlgorithmThread(algo);
                 t.StartThread();
             };
+            WavePropagationAlgorithm.Click += (_, _) =>
+            {
+                AAlgorithm algo = new WavePropagation(MazeRewrite);
+                var t = new AlgorithmThread(algo);
+                t.StartThread();
+            };
         }
 
         private void OnCreateNewGame(object sender, EventArgs e)
