@@ -54,7 +54,7 @@ namespace WpfMaze.MazeGame.Algorithms
                 steps++;
             }
             watch.Stop();
-            Console.WriteLine(watch.ElapsedMilliseconds + "ms " + Path.Directions.Count + " elements");
+            Console.WriteLine(watch.ElapsedMilliseconds + "ms " + Path.Directions.Count + " Elements (Wallfollower)");
         }
 
         private bool IsWall(Direction direction)

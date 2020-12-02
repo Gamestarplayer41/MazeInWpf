@@ -25,7 +25,7 @@ namespace WpfMaze
             InitializeComponent();
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
             CreateNewGame.Click += OnCreateNewGame;
-            SizeChanged += (_, _) => ZoomToSize();
+            SizeChanged += (sdfsdf, sdf) => ZoomToSize();
             KeyDown += MovePlayer;
             GameHeightInput.Text = Convert.ToString(GameHeight);
             GameWidthInput.Text = Convert.ToString(GameWidth);
@@ -56,7 +56,7 @@ namespace WpfMaze
                 var t = new AlgorithmThread(algo);
                 t.StartThread();
             };
-            WavePropagationAlgorithm.Click += (_, _) =>
+            WavePropagationAlgorithm.Click += (asdsad,fghsa) =>
             {
                 AAlgorithm algo = new WavePropagation(MazeRewrite);
                 var t = new AlgorithmThread(algo);
@@ -70,7 +70,7 @@ namespace WpfMaze
             GameHeight = Convert.ToInt32(GameHeightInput.Text);
             MazeRewrite = new MazeRewrite(GameWidth, GameHeight, typeof(BinaryTree));
             Bitmap.Source = MazeRewrite.Bitmap;
-            MazeRewrite.OnSolved += (_, _) => { MessageBox.Show("Labyrinth Gelöst!", "Erfolg", MessageBoxButton.OK); };
+            // MazeRewrite.OnSolved += (fdsf, asd) => { MessageBox.Show("Labyrinth Gelöst!", "Erfolg", MessageBoxButton.OK); };
         }
 
         private void ZoomToSize()

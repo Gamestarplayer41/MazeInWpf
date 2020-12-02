@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using WpfMaze.Mazegame;
@@ -13,6 +14,8 @@ namespace WpfMaze.MazeGame.Algorithms
         private List<(int, int)> CurrentNodes { get; set; } // x,y
         private List<(int, int)> NewNodes { get; } // x,y
 
+        private Stopwatch Stopwatch { get; }= new Stopwatch();
+
         public WavePropagation(MazeRewrite maze)
         {
             Maze = maze;
@@ -23,6 +26,7 @@ namespace WpfMaze.MazeGame.Algorithms
 
         public override void SolveMaze()
         {
+            Stopwatch.Start();
             this.FloodFill();
         }
 
@@ -79,15 +83,66 @@ namespace WpfMaze.MazeGame.Algorithms
                             found = true;
                     }
                 }
-
                 CurrentNodes = NewNodes.Distinct().ToList();
                 NewNodes.Clear();
             } 
+            findPath();
         }
 
         private void findPath()
         {
-            
+            bool found = false;
+            int x, y;
+            x = Maze.Player.X;
+            y = Maze.Player.Y;
+            int currentDistance;
+            while (!found)
+            {
+                currentDistance = Distance[y, x];
+                //todo inBound check
+                if (currentDistance> Distance[y + 1, x] && Distance[y+1,x]!=0)
+                {
+                    Path.AddElement(DirectionDown);
+                    y++;
+                    found = Maze.Finish.X == x && Maze.Finish.Y == y;
+                    continue;
+                }
+
+                if (currentDistance> Distance[y - 1, x] && Distance[y-1,x] != 0)
+                {
+                    Path.AddElement(DirectionUp);
+                    y--;
+                    found = Maze.Finish.X == x && Maze.Finish.Y == y;
+                    continue; 
+                }
+
+                if (currentDistance> Distance[y, x + 1] && Distance[y,x+1] !=0)
+                {
+                    Path.AddElement(DirectionRight);
+                    x++;
+                    found = Maze.Finish.X == x && Maze.Finish.Y == y;
+                    continue;
+                }
+
+                if (currentDistance>Distance[y, x - 1] && Distance[y,x-1] !=0)
+                {
+                    Path.AddElement(DirectionLeft);
+                    x--;
+                    found = Maze.Finish.X == x && Maze.Finish.Y == y;
+                    continue;
+                }
+
+                Path.RemoveLastElement();
+                Distance[y, x] = -1;
+            }
+            printPath();
+        }
+
+        private void printPath()
+        {
+          
+            Stopwatch.Stop();
+            Console.WriteLine($"{Stopwatch.ElapsedMilliseconds}ms {Path.Directions.Count} Elements (Wave)");
         }
 
         private void printDistanceBoard()

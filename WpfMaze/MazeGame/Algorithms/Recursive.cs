@@ -9,20 +9,18 @@ namespace WpfMaze.MazeGame.Algorithms
 {
     public class Recursive : AAlgorithm
     {
-        private List<Direction> CleanedDirections { get; }
 
         private List<Direction> PossibleDirections { get; }
 
         private Random Random { get; } = new Random();
 
-        private byte[,] Visited;
+        private bool[,] Visited;
         private int X, Y;
 
         public Recursive(MazeRewrite maze)
         {
             Maze = maze;
-            Visited = new byte[Maze.Height, Maze.Width];
-            CleanedDirections = new List<Direction>();
+            Visited = new Boolean[Maze.Height, Maze.Width];
             PossibleDirections = new List<Direction>();
         }
 
@@ -33,12 +31,11 @@ namespace WpfMaze.MazeGame.Algorithms
             var found = false;
             X = Maze.Player.X;
             Y = Maze.Player.Y;
-            Visited[Y, X] = 1;
+            Visited[Y, X] = true;
             while (!found)
             {
                 GetPossibleDirections(X, Y);
-                GetDirectionsNotVisited();
-                if (CleanedDirections.Count == 0)
+                if (PossibleDirections.Count == 0)
                 {
                     if (Path.Directions.Count == 0)
                         return;
@@ -48,40 +45,29 @@ namespace WpfMaze.MazeGame.Algorithms
                     Y -= deltaYOld;
                     continue;
                 }
-                Direction dir = CleanedDirections[Random.Next(CleanedDirections.Count)];
+                Direction dir = PossibleDirections[Random.Next(PossibleDirections.Count)];
                 var (deltaX, deltaY) = dir.GetMovementDeltas();
                 Path.AddElement(dir);
                 X += deltaX;
                 Y += deltaY;
-                Visited[Y, X] = 1;
+                Visited[Y, X] = true;
                 if (Maze.Finish.X == X && Maze.Finish.Y == Y)
                     found = true;
             }
             watch.Stop();
-            Console.WriteLine(watch.ElapsedMilliseconds + "ms " + Path.Directions.Count + " elements");
-        }
-
-        private void GetDirectionsNotVisited()
-        {
-            CleanedDirections.Clear();
-            foreach (Direction dir in PossibleDirections)
-            {
-                var (deltaX, deltaY) = dir.GetMovementDeltas();
-                if (Visited[Y + deltaY, X + deltaX] == 0)
-                    CleanedDirections.Add(dir);
-            }
+            Console.WriteLine(watch.ElapsedMilliseconds + "ms " + Path.Directions.Count + " Elements (Recursive)");
         }
 
         private void GetPossibleDirections(int x, int y)
         {
             PossibleDirections.Clear();
-            if (Maze.Board[y + 1, x] == 0)
+            if (Maze.Board[y + 1, x] == 0 && !Visited[y+1,x])
                 PossibleDirections.Add(Direction.Down);
-            if (Maze.Board[y, x + 1] == 0)
+            if (Maze.Board[y, x + 1] == 0 && !Visited[y,x+1])
                 PossibleDirections.Add(Direction.Right);
-            if (Maze.Board[y - 1, x] == 0)
+            if (Maze.Board[y - 1, x] == 0 && !Visited[y-1,x])
                 PossibleDirections.Add(Direction.Up);
-            if (Maze.Board[y, x - 1] == 0)
+            if (Maze.Board[y, x - 1] == 0 && !Visited[y,x-1])
                 PossibleDirections.Add(Direction.Left);
         }
     }
