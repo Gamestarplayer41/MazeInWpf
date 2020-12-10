@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Windows;
+﻿using System.Windows;
 
 namespace WpfMaze
 {
@@ -14,12 +12,8 @@ namespace WpfMaze
         private void ZoomToPlayer_OnClick(object sender, RoutedEventArgs e)
         {
             foreach (Window window in Application.Current.Windows)
-            {
                 if (window.GetType() == typeof(MainWindow))
-                {
                     (window as MainWindow).ZoomToPlayer();
-                }
-            }
         }
     }
 }

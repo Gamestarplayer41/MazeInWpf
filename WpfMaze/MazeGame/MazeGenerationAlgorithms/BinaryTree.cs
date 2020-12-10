@@ -6,45 +6,38 @@ namespace WpfMaze.Mazegame.MazeGenerationAlgorithms
 {
     public class BinaryTree : AMazeAlgorithm
     {
-        private List<Direction> PossibleDirections { get; set; }
-
         public BinaryTree(byte[,] board)
         {
             Board = board;
             PossibleDirections = new List<Direction>();
         }
 
+        private List<Direction> PossibleDirections { get; }
+
         public override void GenerateMaze()
         {
-            Random random = new Random();
+            var random = new Random();
             SetAllWalls();
-            bool first = true;
-            for (int x = 1; x < Width; x += 2)
+            var first = true;
+            for (var x = 1; x < Width; x += 2)
+            for (var y = 1; y < Height; y += 2)
             {
-                for (int y = 1; y < Height; y += 2)
+                if (first)
                 {
-                    if (first)
-                    {
-                        Board[y, x] = 0;
-                        first = false;
-                        continue;
-                    }
                     Board[y, x] = 0;
-                    GetPossibleDirections(x, y);
-                    Direction randomDirection = PossibleDirections[random.Next(PossibleDirections.Count)];
-                    (int deltaX, int deltaY) = randomDirection.GetMovementDeltas();
-                    Board[y + deltaY, x + deltaX] = 0;
+                    first = false;
+                    continue;
                 }
+
+                Board[y, x] = 0;
+                GetPossibleDirections(x, y);
+                Direction randomDirection = PossibleDirections[random.Next(PossibleDirections.Count)];
+                var (deltaX, deltaY) = randomDirection.GetMovementDeltas();
+                Board[y + deltaY, x + deltaX] = 0;
             }
 
-            for (int x = 0; x < Width; x++)
-            {
-                Board[Height - 1, x] = 1;
-            }
-            for (int y = 0; y < Height; y++)
-            {
-                Board[y, Width - 1] = 1;
-            }
+            for (var x = 0; x < Width; x++) Board[Height - 1, x] = 1;
+            for (var y = 0; y < Height; y++) Board[y, Width - 1] = 1;
         }
 
         private void GetPossibleDirections(int x, int y)
@@ -75,13 +68,9 @@ namespace WpfMaze.Mazegame.MazeGenerationAlgorithms
 
         private void SetAllWalls()
         {
-            for (int x = 0; x < Width; x++)
-            {
-                for (int y = 0; y < Height; y++)
-                {
-                    Board[y, x] = 1;
-                }
-            }
+            for (var x = 0; x < Width; x++)
+            for (var y = 0; y < Height; y++)
+                Board[y, x] = 1;
         }
     }
 }

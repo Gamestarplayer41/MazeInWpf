@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Windows.Automation;
 using WpfMaze.Mazegame;
 using WpfMaze.MazeGame.Space;
 
@@ -8,7 +7,6 @@ namespace WpfMaze.MazeGame.Algorithms
 {
     internal class Wallfollower : AAlgorithm
     {
-        private int Dir { get; set; } = 1;
         private int X, Y;
 
 
@@ -18,6 +16,8 @@ namespace WpfMaze.MazeGame.Algorithms
             X = maze.Player.X;
             Y = maze.Player.Y;
         }
+
+        private int Dir { get; set; } = 1;
 
         public override void SolveMaze()
         {
@@ -29,10 +29,10 @@ namespace WpfMaze.MazeGame.Algorithms
             var watch = new Stopwatch();
             watch.Start();
             var found = false;
-            int steps = 0;
-            int maximumSteps = (int) Math.Pow(Maze.Height * Maze.Width, 2);
+            var steps = 0;
+            var maximumSteps = (int) Math.Pow(Maze.Height * Maze.Width, 2);
             Direction direction;
-            int i = -1;
+            var i = -1;
             while (!found)
             {
                 if (steps == maximumSteps)
@@ -51,8 +51,10 @@ namespace WpfMaze.MazeGame.Algorithms
                         found = true;
                     break;
                 }
+
                 steps++;
             }
+
             watch.Stop();
             Console.WriteLine(watch.ElapsedMilliseconds + "ms " + Path.Directions.Count + " Elements (Wallfollower)");
         }

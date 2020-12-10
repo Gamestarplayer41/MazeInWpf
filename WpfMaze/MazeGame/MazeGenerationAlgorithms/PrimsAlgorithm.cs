@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Documents;
 
 namespace WpfMaze.Mazegame.MazeGenerationAlgorithms
 {
@@ -10,17 +9,17 @@ namespace WpfMaze.Mazegame.MazeGenerationAlgorithms
         {
             Board = board;
         }
-        
+
         public override void GenerateMaze()
         {
-             // This algorithm is a randomized version of Prim's algorithm. (see https://en.wikipedia.org/wiki/Maze_generation_algorithm#Randomized_Prim%27s_algorithm)
+            // This algorithm is a randomized version of Prim's algorithm. (see https://en.wikipedia.org/wiki/Maze_generation_algorithm#Randomized_Prim%27s_algorithm)
             var random = new Random();
             int r, c;
 
             // Start with a grid full of walls.
             for (r = 0; r < Height; r++)
-                for (c = 0; c < Width; c++)
-                    Board[r, c] = 1;
+            for (c = 0; c < Width; c++)
+                Board[r, c] = 1;
 
             // Pick a cell, mark it as part of the maze. Add the walls of the cell to the wall list.
             var walls = new List<(int Row, int Col)>();
@@ -151,10 +150,11 @@ namespace WpfMaze.Mazegame.MazeGenerationAlgorithms
                             walls.Add((unvisitedCell.Row, unvisitedCell.Col - 1));
                     }
                 }
+
                 walls.RemoveAt(index);
             }
         }
-        
+
         private bool IsInBounds(int row, int col)
         {
             if (row <= 0)

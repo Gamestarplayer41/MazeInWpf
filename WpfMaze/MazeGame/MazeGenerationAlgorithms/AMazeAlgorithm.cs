@@ -1,6 +1,4 @@
-﻿using System.Dynamic;
-using System.Resources.Extensions;
-using WpfMaze.MazeGame.Space;
+﻿using WpfMaze.MazeGame.Space;
 
 namespace WpfMaze.Mazegame.MazeGenerationAlgorithms
 {

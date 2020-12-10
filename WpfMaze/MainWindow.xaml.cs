@@ -13,25 +13,28 @@ namespace WpfMaze
 {
     public partial class MainWindow
     {
-        private int GameHeight { get; set; } = 10;
-        private int GameWidth { get; set; } = 10;
-        private MazeRewrite MazeRewrite { get; set; }
-        private Point? MousePos { get; set; }
-
-
         public MainWindow()
         {
             ConsoleAllocator.ShowConsoleWindow();
             InitializeComponent();
             RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
-            CreateNewGame.Click += OnCreateNewGame;
-            SizeChanged += (sdfsdf, sdf) => ZoomToSize();
-            KeyDown += MovePlayer;
-            GameHeightInput.Text = Convert.ToString(GameHeight);
-            GameWidthInput.Text = Convert.ToString(GameWidth);
             AlgorithmButtons();
             StackPanelEvents();
             OnCreateNewGame(null, null);
+            WindowEvents();
+            MessageBox.Show("Player: WASD \nZoom to Finish: F \nReset: R", "Steuerung", MessageBoxButton.OK);
+        }
+
+        private int GameHeight { get; set; } = 10;
+        private int GameWidth { get; set; } = 10;
+        private MazeRewrite MazeRewrite { get; set; }
+        private Point? MousePos { get; set; }
+
+        private void WindowEvents()
+        {
+            CreateNewGame.Click += OnCreateNewGame;
+            SizeChanged += (_, _) => ZoomCanvas();
+            KeyDown += MovePlayer;
         }
 
         private void StackPanelEvents()
@@ -44,19 +47,19 @@ namespace WpfMaze
 
         private void AlgorithmButtons()
         {
-            WallfollowerAlgorithm.Click += (sender, e) =>
+            WallfollowerAlgorithm.Click += (_, _) =>
             {
                 AAlgorithm algo = new Wallfollower(MazeRewrite);
                 var t = new AlgorithmThread(algo);
                 t.StartThread();
             };
-            RecursiveAlogrithm.Click += (sender, e) =>
+            RandomBacktrackerAlgorithm.Click += (_, _) =>
             {
-                AAlgorithm algo = new Recursive(MazeRewrite);
+                AAlgorithm algo = new RandomBacktracker(MazeRewrite);
                 var t = new AlgorithmThread(algo);
                 t.StartThread();
             };
-            WavePropagationAlgorithm.Click += (asdsad,fghsa) =>
+            WavePropagationAlgorithm.Click += (_, _) =>
             {
                 AAlgorithm algo = new WavePropagation(MazeRewrite);
                 var t = new AlgorithmThread(algo);
@@ -66,23 +69,18 @@ namespace WpfMaze
 
         private void OnCreateNewGame(object sender, EventArgs e)
         {
-            GameWidth = Convert.ToInt32(GameWidthInput.Text);
-            GameHeight = Convert.ToInt32(GameHeightInput.Text);
+            GameSizeInputs();
             MazeRewrite = new MazeRewrite(GameWidth, GameHeight, typeof(BinaryTree));
             Bitmap.Source = MazeRewrite.Bitmap;
-            // MazeRewrite.OnSolved += (fdsf, asd) => { MessageBox.Show("Labyrinth Gelöst!", "Erfolg", MessageBoxButton.OK); };
+            MazeRewrite.OnSolved += (_, _) => { MessageBox.Show("Labyrinth Gelöst!", "Erfolg", MessageBoxButton.OK); };
         }
 
-        private void ZoomToSize()
+        private void GameSizeInputs()
         {
-            Matrix matrix = MatrixTransform.Matrix;
-            matrix.OffsetX = 0;
-            matrix.OffsetY = 0;
-            var scale = Math.Min(BitmapCanvas.ActualWidth / MazeRewrite.Width, BitmapCanvas.ActualHeight / MazeRewrite.Height);
-            matrix.M11 = 1;
-            matrix.M22 = 1;
-            matrix.Scale(scale, scale);
-            MatrixTransform.Matrix = matrix;
+            GameWidth = int.TryParse(GameWidthInput.Text, out var value) ? value : GameWidth;
+            GameHeight = int.TryParse(GameHeightInput.Text, out value) ? value : GameHeight;
+            GameWidthInput.Text = GameWidth.ToString();
+            GameHeightInput.Text = GameHeight.ToString();
         }
 
         private void MovePlayer(object sender, KeyEventArgs e)
@@ -103,17 +101,21 @@ namespace WpfMaze
                     break;
                 case Key.R:
                     OnCreateNewGame(null, null);
-                    ZoomToSize();
+                    ZoomCanvas();
+                    return;
+                case Key.F:
+                    ZoomCanvas(MazeRewrite.Finish.X, MazeRewrite.Finish.Y);
                     return;
                 default:
                     return;
             }
+
             ZoomToPlayer();
         }
 
         private void OnBitapMouseWheel(object sender, MouseWheelEventArgs e)
         {
-            Point pos = e.GetPosition((UIElement)sender);
+            Point pos = e.GetPosition((UIElement) sender);
             Matrix matrix = MatrixTransform.Matrix;
             var scale = e.Delta > 0 ? 1.1 : 1 / 1.1;
             matrix.ScaleAt(scale, scale, pos.X, pos.Y);
@@ -122,7 +124,7 @@ namespace WpfMaze
 
         private void OnBitmapLeftMouseDown(object sender, MouseButtonEventArgs e)
         {
-            var viewport = (UIElement)sender;
+            var viewport = (UIElement) sender;
             viewport.CaptureMouse();
             MousePos = e.GetPosition(viewport);
         }
@@ -130,7 +132,7 @@ namespace WpfMaze
         private void OnBitmapMouseMove(object sender, MouseEventArgs e)
         {
             if (!MousePos.HasValue) return;
-            Point pos = e.GetPosition((UIElement)sender);
+            Point pos = e.GetPosition((UIElement) sender);
             Matrix matrix = MatrixTransform.Matrix;
             matrix.Translate(pos.X - MousePos.Value.X, pos.Y - MousePos.Value.Y);
             MatrixTransform.Matrix = matrix;
@@ -139,13 +141,13 @@ namespace WpfMaze
 
         private void OnBitmapLeftMouseUp(object sender, MouseButtonEventArgs e)
         {
-            ((UIElement)sender).ReleaseMouseCapture();
+            ((UIElement) sender).ReleaseMouseCapture();
             MousePos = null;
         }
 
         private void OnResizeButtonClick(object sender, RoutedEventArgs e)
         {
-            ZoomToSize();
+            ZoomCanvas();
         }
 
         private void OpenDevToolWindowButtonClick(object sender, RoutedEventArgs routedEventArgs)
@@ -156,15 +158,31 @@ namespace WpfMaze
 
         public void ZoomToPlayer()
         {
+            ZoomCanvas(MazeRewrite.Player.X, MazeRewrite.Player.Y);
+        }
+
+        private void ZoomCanvas(double? x = null, double? y = null)
+        {
             Matrix matrix = MatrixTransform.Matrix;
             matrix.M11 = 1;
             matrix.M22 = 1;
             var scale = Math.Min(BitmapCanvas.ActualWidth / MazeRewrite.Width,
                 BitmapCanvas.ActualHeight / MazeRewrite.Height);
-            scale *= MazeRewrite.Width / 10;
-            matrix.Scale(scale, scale);
-            matrix.OffsetX = (BitmapCanvas.ActualWidth / 2 - scale / 2) - MazeRewrite.Player.X * scale;
-            matrix.OffsetY = (BitmapCanvas.ActualHeight / 2 - scale / 2) - MazeRewrite.Player.Y * scale;
+            if (x != null && y != null)
+            {
+                scale *= MazeRewrite.Width / 10;
+                matrix.Scale(scale, scale);
+                matrix.OffsetX = (double) (BitmapCanvas.ActualWidth / 2 - scale / 2 - x * scale);
+                matrix.OffsetY = (double) (BitmapCanvas.ActualHeight / 2 - scale / 2 - y * scale);
+            }
+            else
+            {
+                matrix.Scale(scale, scale);
+                matrix.OffsetX = 0;
+                matrix.OffsetY = 0;
+            }
+
+
             MatrixTransform.Matrix = matrix;
         }
     }
