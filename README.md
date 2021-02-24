@@ -8,9 +8,9 @@ The mazegame itself is rendered in a `writeablebitmap` for performance. Renderin
 
 Following things will be added later:
 
-1. Autotrack for player
+1. Autotrack for player ✓
 2. Devtool
-3. Console to debugging Window (Statistics of algorithms)
+3. Console to debugging Window (Statistics of algorithms)(✓)
 4. Colorpicker
 5. Mapeditor
-6. Multiple maze generation algorithms
+6. Multiple maze generation algorithms (✓)
